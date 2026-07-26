@@ -22,7 +22,30 @@ Useful modes:
 ./script/build_and_run.sh --debug
 ```
 
-Run the unit suite with `swift test`.
+## Reproducible verification
+
+Run the same automated gate used by CI without opening the app:
+
+```sh
+./script/ci_verify.sh --package
+```
+
+The gate validates shell syntax, builds the SwiftPM product, runs the complete
+test suite and the focused security regressions, then creates and verifies the
+extracted ad hoc ZIP at `dist/AirShortcut.zip`. Its summary also reports the
+test count and local artifact paths. Omit `--package` only for a faster local
+iteration that does not produce package evidence.
+
+CI runs this command for pull requests and pushes to `main`. A green CI result
+covers compilation, automated tests, security regressions, and local ad hoc
+packaging. It does **not** validate a physical trackpad, private-framework
+compatibility on every macOS/device, Developer ID signing, Gatekeeper
+acceptance, or notarization.
+
+If SwiftPM reports `ModuleCache: Operation not permitted` in a restricted local
+environment, run `swift test --disable-sandbox` to confirm the suite with an
+environmental sandbox exception. This is a recovery command for local cache
+permissions, not a replacement for the canonical CI gate.
 
 Rules can be backed up or restored from the **File** menu using the versioned JSON import/export commands. Imports merge by stable rule identifier so existing unrelated rules are preserved. Every imported rule is staged disabled and must be reviewed and enabled locally before it can execute.
 
