@@ -4,7 +4,7 @@
 
 **Baseline**: `27e0650`
 
-**Implementation range reviewed by the author**: `27e0650..b0ddf45`
+**Implementation range reviewed by the author**: `27e0650..326cc07`
 
 **Verifier input**: baseline acima até o commit T19 que adiciona este arquivo e
 congela `spec.md`, `design.md`, `tasks.md` e `context.md`.
@@ -25,6 +25,7 @@ conclusões deste relatório.
 | T17 | `1b7785c` | decisão `PREVIEW`; distribuição e suporte físico `BLOCKED` |
 | T18 | `9f80d33` | release notes e issues locais com critérios de aceite |
 | correção de gate | `b0ddf45` | trailing whitespace removido das evidências |
+| correção pós-Verifier | `326cc07` | script canônico e estado de lessons restaurados; gaps reais registrados como candidatos |
 
 ## Gates finais do autor
 
@@ -62,6 +63,9 @@ fora do commit.
 - Notarização: `not-attempted`; sem evidência `notarytool`.
 - Staple, `stapler validate`, `spctl` e máquina limpa: NOT-RUN.
 - Workflow remoto do GitHub Actions: ainda requer evidência de execução real.
+- `scripts/lessons.py`: restaurado a partir do asset canônico do
+  `tlc-spec-driven`; quatro gaps reais foram registrados sem promover guidance
+  antes de recorrência em outra feature.
 
 ## Handoff independente
 
