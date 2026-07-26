@@ -29,7 +29,7 @@ struct SidebarView: View {
             }
         }
         .listStyle(.sidebar)
-        .navigationTitle("AirShortcut")
+        .navigationTitle(TicoBrand.displayName)
         .frame(minWidth: 190, idealWidth: 220)
     }
 }

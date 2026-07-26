@@ -12,7 +12,7 @@ final class TrackpadValidationStore: ObservableObject {
 
     init(
         defaults: UserDefaults = .standard,
-        storageKey: String = "com.airshortcut.trackpad-validation"
+        storageKey: String = TicoBrand.legacyUserDefaultsPrefix + "trackpad-validation"
     ) {
         self.defaults = defaults
         self.storageKey = storageKey

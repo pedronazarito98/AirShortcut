@@ -1,20 +1,33 @@
-# AirShortcut QA checklist
+# Tico QA checklist
 
 ## Automated
 
 - `swift build --product AirShortcut`
 - `swift test`
 - `bash -n script/build_and_run.sh`
-- `plutil -lint dist/AirShortcut.app/Contents/Info.plist`
-- `codesign --verify --deep --strict --verbose=2 dist/AirShortcut.app`
+- `./script/build_and_run.sh --package`
+- `./script/build_and_run.sh --release-package`
+- `plutil -lint dist/Tico.app/Contents/Info.plist`
+- `test "$(plutil -extract CFBundleDisplayName raw dist/Tico.app/Contents/Info.plist)" = "Tico"`
+- `test "$(plutil -extract CFBundleExecutable raw dist/Tico.app/Contents/Info.plist)" = "AirShortcut"`
+- `test "$(plutil -extract CFBundleIdentifier raw dist/Tico.app/Contents/Info.plist)" = "com.pedronazarito.AirShortcut"`
+- `test -f dist/Tico.app/Contents/Resources/Tico.icns`
+- `codesign --verify --deep --strict --verbose=2 dist/Tico.app`
 - `./script/build_and_run.sh --verify`
+
+For a public release, additionally require:
+
+- a `Developer ID Application` identity in the Keychain;
+- `TICO_NOTARYTOOL_PROFILE` configured;
+- `./script/notarize_release.sh` completes successfully;
+- `spctl` reports `accepted` and `Notarized Developer ID`.
 
 ## Manual: clean permission state
 
 - Launch the `.app` bundle and confirm the main window comes to the front.
 - Verify Accessibility and Input Monitoring display their real current state.
 - With Input Monitoring denied, verify capture does not start and an explanation appears.
-- Grant a permission in System Settings, return to AirShortcut, and refresh.
+- Grant a permission in System Settings, return to Tico, and refresh.
 
 ## Manual: capture and rules
 
@@ -57,3 +70,6 @@
 - Main window reopening from menu bar.
 - Settings persistence and login item state.
 - Relaunch after bundle rebuild without losing rule data.
+- Confirm Finder, Dock, Spotlight, and System Settings show `Tico` and its icon.
+- Confirm `Contents/MacOS/AirShortcut` remains the executable and existing
+  permissions are retained after upgrading from an AirShortcut build.

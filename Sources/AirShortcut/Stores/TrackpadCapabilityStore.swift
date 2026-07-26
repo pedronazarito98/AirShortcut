@@ -22,7 +22,7 @@ final class TrackpadCapabilityStore: ObservableObject {
 
     init(
         defaults: UserDefaults = .standard,
-        storageKey: String = "com.airshortcut.trackpad-capabilities"
+        storageKey: String = TicoBrand.legacyUserDefaultsPrefix + "trackpad-capabilities"
     ) {
         self.defaults = defaults
         self.storageKey = storageKey
@@ -71,4 +71,3 @@ final class TrackpadCapabilityStore: ObservableObject {
         defaults.set(data, forKey: storageKey)
     }
 }
-

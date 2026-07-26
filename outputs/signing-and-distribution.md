@@ -2,7 +2,14 @@
 
 ## Current development artifact
 
-`script/build_and_run.sh` builds the SwiftPM executable, stages `dist/AirShortcut.app`, writes bundle metadata, applies an ad hoc signature, and opens the bundle. This is suitable for local development only; notarization is not required for that workflow.
+`script/build_and_run.sh` builds the SwiftPM product and executable
+`AirShortcut`, stages the public bundle as `dist/Tico.app`, creates
+`dist/Tico.zip`, writes bundle metadata, applies an ad hoc signature, and opens
+the bundle. The public rename deliberately preserves
+`CFBundleExecutable=AirShortcut` and
+`CFBundleIdentifier=com.pedronazarito.AirShortcut` for technical and TCC
+continuity. This is suitable for local development only; notarization is not
+required for that workflow.
 
 For local ad hoc builds, the script embeds an explicit development-only designated requirement based on the stable bundle identifier. Without it, the default ad hoc identity is a changing `cdhash`, so TCC may forget Input Monitoring after every rebuild. Set `AIRSHORTCUT_CODESIGN_IDENTITY` to a real code-signing identity when one becomes available; the script then uses the certificate-backed identity instead.
 
@@ -23,6 +30,22 @@ Required prerequisites:
 5. Archive the signed app, submit it with `notarytool`, wait for acceptance, and staple the ticket.
 6. Validate the final artifact on a clean Mac/user account.
 
+The repository exposes two separate commands:
+
+```sh
+./script/build_and_run.sh --release-package
+./script/notarize_release.sh
+```
+
+The first command always creates an optimized release candidate. With
+`AIRSHORTCUT_CODESIGN_IDENTITY` unset it uses an ad hoc signature and prints a
+local-only warning. With a Developer ID Application identity configured it
+adds Hardened Runtime and a secure timestamp.
+
+The second command requires `TICO_NOTARYTOOL_PROFILE`, refuses ad hoc builds,
+submits the ZIP, waits for Apple, staples the ticket, recreates the archive and
+checks both `codesign` and Gatekeeper.
+
 ## Entitlement policy
 
 Start with no App Sandbox and no optional entitlements. Add Apple Events automation only when a concrete cross-app automation feature ships. Accessibility and Input Monitoring remain TCC permissions requested at runtime; they are not a reason to invent unrelated entitlements.
@@ -32,10 +55,39 @@ Arbitrary shell scripts are incompatible with a tightly sandboxed App Store post
 ## Validation commands
 
 ```sh
-codesign -dvvv --entitlements :- dist/AirShortcut.app
-codesign --verify --deep --strict --verbose=2 dist/AirShortcut.app
-spctl -a -vv --type execute dist/AirShortcut.app
-plutil -lint dist/AirShortcut.app/Contents/Info.plist
+codesign -dvvv --entitlements :- dist/Tico.app
+codesign --verify --deep --strict --verbose=2 dist/Tico.app
+spctl -a -vv --type execute dist/Tico.app
+plutil -lint dist/Tico.app/Contents/Info.plist
 ```
 
 For a release candidate, also inspect the notarization log and run `stapler validate` after stapling. Gatekeeper rejection of the current ad hoc build is expected and is distinct from a compilation or local launch failure.
+
+The distributable artifact is `dist/Tico.zip`. Validate it from a clean
+temporary directory before delivery:
+
+```sh
+ditto -x -k dist/Tico.zip /private/tmp/tico-package-check
+xattr -cr /private/tmp/tico-package-check/Tico.app
+codesign --verify --deep --strict --verbose=2 /private/tmp/tico-package-check/Tico.app
+```
+
+## Compatibilidade durante a mudança de nome
+
+O nome público `Tico` não altera o cliente técnico reconhecido pelo macOS:
+
+- `CFBundleIdentifier` continua `com.pedronazarito.AirShortcut`;
+- o executável continua `AirShortcut`;
+- builds locais continuam usando o mesmo requisito designado;
+- dados continuam em `Application Support/AirShortcut`;
+- preferências continuam usando chaves `com.airshortcut.*`.
+
+Essa estabilidade é necessária para que uma atualização não apareça como um
+novo cliente para TCC. A assinatura ad hoc permite testar a igualdade do
+identificador e do requisito designado, mas a confirmação definitiva de
+permissões entre versões distribuídas depende de ambas serem assinadas pelo
+mesmo certificado Developer ID.
+
+Não mover dados para `Application Support/Tico` nesta transição. Uma migração
+futura precisa ser uma etapa própria, com cópia atômica, verificação do
+conteúdo, rollback e fallback de leitura para a pasta anterior.

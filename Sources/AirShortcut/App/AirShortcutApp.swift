@@ -39,13 +39,14 @@ struct AirShortcutApp: App {
     }
 
     var body: some Scene {
-        WindowGroup("AirShortcut", id: "main") {
+        WindowGroup(TicoBrand.displayName, id: "main") {
             ContentView(
                 controller: controller,
                 shortcutStore: shortcutStore,
                 eventLogStore: eventLogStore,
                 permissions: permissions
             )
+            .tint(TicoBrand.Palette.primary)
         }
         .defaultSize(width: 1_080, height: 700)
         .commands {
@@ -54,14 +55,27 @@ struct AirShortcutApp: App {
 
         Settings {
             SettingsView(settings: settings)
+                .tint(TicoBrand.Palette.primary)
         }
 
-        MenuBarExtra(
-            "AirShortcut",
-            systemImage: controller.captureIsRunning ? "bolt.circle.fill" : "bolt.circle",
-            isInserted: menuBarExtraIsInserted
-        ) {
+        MenuBarExtra(isInserted: menuBarExtraIsInserted) {
             MenuBarContentView(controller: controller, shortcutStore: shortcutStore)
+        } label: {
+            ZStack(alignment: .bottomTrailing) {
+                Image(nsImage: TicoBrand.Assets.menuBarImage)
+                    .frame(width: 18, height: 18)
+
+                if controller.captureIsRunning {
+                    Circle()
+                        .fill(.primary)
+                        .frame(width: 5, height: 5)
+                        .overlay {
+                            Circle().stroke(.background, lineWidth: 1)
+                        }
+                }
+            }
+            .accessibilityLabel(TicoBrand.displayName)
+            .accessibilityValue(controller.captureIsRunning ? "Captura ativa" : "Captura pausada")
         }
     }
 

@@ -85,7 +85,7 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .airShortcutExportRules)) { _ in
             exportRules()
         }
-        .alert("AirShortcut", isPresented: presentedErrorBinding) {
+        .alert(TicoBrand.displayName, isPresented: presentedErrorBinding) {
             Button("OK", role: .cancel) { controller.presentedError = nil }
         } message: {
             Text(controller.presentedError ?? "Erro desconhecido")
@@ -294,7 +294,7 @@ struct ContentView: View {
             let rule = try shortcutStore.create(
                 name: "Nova regra",
                 trigger: .keyboard(keyCode: 49, modifiers: [.command]),
-                action: .notification(title: "AirShortcut", body: "Regra executada")
+                action: .notification(title: TicoBrand.displayName, body: "Regra executada")
             )
             selectedRuleID = rule.id
         } catch {

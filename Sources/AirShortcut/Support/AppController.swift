@@ -199,8 +199,8 @@ final class AppController: ObservableObject {
             trackpadGestures.stop()
             trackpadCaptureMode = .stopped
             presentedError = permissions.status.inputMonitoring == .denied
-                ? "O Monitoramento de Entrada foi negado. Abra os Ajustes do Sistema, habilite o AirShortcut e reabra o app."
-                : "Conceda Monitoramento de Entrada e reabra o AirShortcut para observar contatos globais."
+                ? "O Monitoramento de Entrada foi negado. Abra os Ajustes do Sistema, habilite o \(TicoBrand.displayName) e reabra o app."
+                : "Conceda Monitoramento de Entrada e reabra o \(TicoBrand.displayName) para observar contatos globais."
             return false
         }
         refreshTrackpadHardware()
@@ -291,8 +291,8 @@ final class AppController: ObservableObject {
             }
             if !permissions.status.canCaptureGlobalInput {
                 presentedError = permissions.status.inputMonitoring == .denied
-                    ? "O Monitoramento de Entrada foi negado. Abra os Ajustes do Sistema, habilite o AirShortcut e reabra o app."
-                    : "Conceda Monitoramento de Entrada e reabra o AirShortcut para iniciar a captura global."
+                    ? "O Monitoramento de Entrada foi negado. Abra os Ajustes do Sistema, habilite o \(TicoBrand.displayName) e reabra o app."
+                    : "Conceda Monitoramento de Entrada e reabra o \(TicoBrand.displayName) para iniciar a captura global."
                 captureIsRunning = false
                 logger.error(
                     "Capture start blocked by TCC: inputMonitoring=\(self.permissions.status.inputMonitoring.rawValue, privacy: .public), accessibility=\(self.permissions.status.accessibilityGranted, privacy: .public)"
@@ -334,7 +334,7 @@ final class AppController: ObservableObject {
             trackpadCaptureMode = .stopped
             captureIsRunning = false
             presentedError = permissions.status.canCaptureGlobalInput
-                ? "O macOS reconhece a permissão, mas não criou o monitor global. Encerre e reabra o AirShortcut. Detalhe: \(error.localizedDescription)"
+                ? "O macOS reconhece a permissão, mas não criou o monitor global. Encerre e reabra o \(TicoBrand.displayName). Detalhe: \(error.localizedDescription)"
                 : error.localizedDescription
             logger.error("Global capture failed: \(error.localizedDescription, privacy: .public)")
         }

@@ -33,7 +33,8 @@ Marco A concluído.
 
 ## Limite desta fase
 
-O target SwiftPM já produz o resource bundle, mas o script que monta o `.app`
-manualmente ainda não copia esse bundle nem referencia `Tico.icns` no
-`Info.plist`. Essa integração pertence à fase de empacotamento do plano.
-
+No encerramento do Marco A, o target SwiftPM já produzia o resource bundle, mas
+o script que monta o `.app` ainda não o copiava. O Marco B adicionou a cópia
+para `Contents/Resources`, necessária para renderizar a marca no runtime.
+Referenciar `Tico.icns` no `Info.plist` continua pertencendo à fase de
+empacotamento do plano.

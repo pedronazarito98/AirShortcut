@@ -9,12 +9,12 @@ struct SettingsView: View {
         TabView {
             Form {
                 Section("Inicialização") {
-                    Toggle("Abrir AirShortcut ao iniciar sessão", isOn: launchAtLoginBinding)
+                    Toggle("Abrir \(TicoBrand.displayName) ao iniciar sessão", isOn: launchAtLoginBinding)
                     Toggle("Iniciar captura de eventos ao abrir", isOn: $settings.startEventCaptureOnLaunch)
                 }
 
                 Section("Acesso rápido") {
-                    Toggle("Mostrar AirShortcut na barra de menus", isOn: $settings.showMenuBarExtra)
+                    Toggle("Mostrar \(TicoBrand.displayName) na barra de menus", isOn: $settings.showMenuBarExtra)
                 }
 
                 if let loginItemError {
@@ -31,7 +31,7 @@ struct SettingsView: View {
             Form {
                 Section("Scripts locais") {
                     Label("Confirmação obrigatória em toda execução", systemImage: "checkmark.shield")
-                    Text("Scripts podem modificar arquivos e executar outros programas com sua conta. O AirShortcut sempre mostra o comando antes de executá-lo.")
+                    Text("Scripts podem modificar arquivos e executar outros programas com sua conta. O \(TicoBrand.displayName) sempre mostra o comando antes de executá-lo.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
