@@ -39,13 +39,13 @@ bash -n script/build_and_run.sh
 bash -n script/ci_verify.sh
 
 step "Building AirShortcut"
-swift build "${SWIFT_ARGS[@]}" --product "$APP_NAME"
+swift build ${SWIFT_ARGS[@]+"${SWIFT_ARGS[@]}"} --product "$APP_NAME"
 
 step "Running complete Swift test suite"
-swift test "${SWIFT_ARGS[@]}" 2>&1 | /usr/bin/tee "$TEST_LOG"
+swift test ${SWIFT_ARGS[@]+"${SWIFT_ARGS[@]}"} 2>&1 | /usr/bin/tee "$TEST_LOG"
 
 step "Running security regression suite"
-swift test "${SWIFT_ARGS[@]}" --filter SecurityRegressionTests
+swift test ${SWIFT_ARGS[@]+"${SWIFT_ARGS[@]}"} --filter SecurityRegressionTests
 
 if [[ "$PACKAGE_MODE" -eq 1 ]]; then
   step "Building and verifying local ad hoc package"
