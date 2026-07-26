@@ -60,3 +60,30 @@ claras.
 
 A prancha-mestre está em `tico-identity-master.png`.
 
+## Assets de produção
+
+Os masters ficam em `Masters/`:
+
+- `tico-symbol-light.png` e `tico-symbol-dark.png`;
+- `tico-symbol-monochrome-black.png` e
+  `tico-symbol-monochrome-white.png`;
+- `tico-wordmark-light.png` e `tico-wordmark-dark.png`;
+- `tico-app-icon-master-1024.png`;
+- `Tico.iconset/` e `Tico.icns`.
+
+Os arquivos usados pelo app ficam em
+`Sources/AirShortcut/Resources/Brand/`.
+
+Todos os exports são derivados da mesma silhueta pelo script
+`script/generate_tico_brand_assets.py`. A fonte Sora e a respectiva licença OFL
+ficam junto aos masters e não são incorporadas ao bundle do app.
+
+Para regenerar:
+
+```sh
+python3 script/generate_tico_brand_assets.py \
+  --source Design/Brand/Tico/Masters/tico-symbol-raw.png \
+  --font Design/Brand/Tico/Masters/Sora-VariableFont_wght.ttf \
+  --design-dir Design/Brand/Tico/Masters \
+  --resources-dir Sources/AirShortcut/Resources/Brand
+```

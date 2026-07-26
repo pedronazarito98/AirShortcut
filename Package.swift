@@ -19,7 +19,10 @@ let package = Package(
         .executableTarget(
             name: "AirShortcut",
             dependencies: ["AirShortcutMultitouchBridge"],
-            path: "Sources/AirShortcut"
+            path: "Sources/AirShortcut",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "AirShortcutTests",
