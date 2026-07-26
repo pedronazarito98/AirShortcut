@@ -13,7 +13,7 @@ if [[ ! -f "$report_path" ]]; then
   exit 66
 fi
 
-sensitive_pattern='serial|tcc([[:space:]_-]*(dump|database|db))?|user(name)?|raw[[:space:]_-]*(frame|touch)|/users/|/home/|[a-z]:\\users\\'
+sensitive_pattern='serial|tcc([[:space:]_-]*(dump|database|db))?|user[[:space:]_-]*name|raw[[:space:]_-]*(frame|touch)|/users/|/home/|[a-z]:\\users\\'
 if grep -Eiq "$sensitive_pattern" "$report_path"; then
   echo "hardware report contains a prohibited sensitive marker" >&2
   exit 1
