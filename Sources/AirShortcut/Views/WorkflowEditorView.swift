@@ -180,7 +180,7 @@ struct WorkflowEditorView: View {
 
     private func addStep() {
         let step = WorkflowStep(
-            action: .notification(title: "AirShortcut", body: "Etapa executada")
+            action: .notification(title: TicoBrand.displayName, body: "Etapa executada")
         )
         workflow.steps.append(step)
         selectedStepID = step.id

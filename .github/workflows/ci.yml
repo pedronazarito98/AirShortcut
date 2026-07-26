@@ -26,7 +26,7 @@ jobs:
         if: always()
         run: |
           {
-            echo "## AirShortcut verification"
+            echo "## Tico verification"
             echo
             echo "- Automated coverage: build, Swift tests, security regressions, and ad hoc package verification."
             echo "- Physical coverage: not exercised in CI; use the manual trackpad QA matrix."

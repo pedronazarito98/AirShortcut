@@ -29,7 +29,7 @@ struct RuleActionEditorView: View {
                     Text(application.name).tag(application.bundleIdentifier)
                 }
             }
-            Text("O AirShortcut usa o identificador do app automaticamente.")
+            Text("O \(TicoBrand.displayName) usa o identificador do app automaticamente.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -244,7 +244,7 @@ struct RuleActionEditorView: View {
                     urlText = "https://"
                     action = .openURL(url: URL(string: "https://example.com")!)
                 case .notification:
-                    action = .notification(title: "AirShortcut", body: "Regra executada")
+                    action = .notification(title: TicoBrand.displayName, body: "Regra executada")
                 case .shellScript:
                     action = .shellScript(command: "")
                 case .appleScript:

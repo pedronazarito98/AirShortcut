@@ -88,7 +88,10 @@ final class MetricsStore: ObservableObject {
             in: .userDomainMask
         ).first ?? fileManager.temporaryDirectory
         return root
-            .appendingPathComponent("AirShortcut", isDirectory: true)
+            .appendingPathComponent(
+                TicoBrand.legacyApplicationSupportDirectoryName,
+                isDirectory: true
+            )
             .appendingPathComponent("metrics.json")
     }
 

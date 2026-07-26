@@ -23,7 +23,7 @@ struct PermissionsView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Permissões do sistema")
                         .font(.title2.weight(.semibold))
-                    Text("O AirShortcut solicita apenas o necessário para reconhecer e executar suas regras.")
+                    Text("O \(TicoBrand.displayName) solicita apenas o necessário para reconhecer e executar suas regras.")
                         .foregroundStyle(.secondary)
                 }
 
@@ -33,7 +33,7 @@ struct PermissionsView: View {
 
                 HStack {
                     Button("Atualizar estados", action: onRefresh)
-                    Text("Depois de conceder uma permissão, atualize. Se a captura ainda não iniciar, encerre e reabra o AirShortcut.")
+                    Text("Depois de conceder uma permissão, atualize. Se a captura ainda não iniciar, encerre e reabra o \(TicoBrand.displayName).")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -73,7 +73,7 @@ private struct PermissionCard: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     if permission.id == "input-monitoring", permission.statusText == "Negada" {
-                        Text("Se o AirShortcut não estiver na lista, clique em + nos Ajustes e selecione o app mostrado no Finder.")
+                        Text("Se o \(TicoBrand.displayName) não estiver na lista, clique em + nos Ajustes e selecione o app mostrado no Finder.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

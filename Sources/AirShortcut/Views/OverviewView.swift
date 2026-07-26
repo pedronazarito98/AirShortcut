@@ -94,11 +94,15 @@ struct OverviewView: View {
 
     private var header: some View {
         HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
+                TicoMarkView(.wordmark)
+                    .frame(width: 142, height: 44, alignment: .leading)
+
                 Text("Automatize sem interromper seu fluxo")
                     .font(.title2.weight(.semibold))
-                Text("Gerencie regras globais e acompanhe o que o AirShortcut reconhece.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(TicoBrand.Palette.text)
+                Text("Gerencie regras globais e acompanhe o que o \(TicoBrand.displayName) reconhece.")
+                    .foregroundStyle(TicoBrand.Palette.secondaryText)
             }
             Spacer()
             if !permissionsAreReady {
@@ -110,6 +114,23 @@ struct OverviewView: View {
             Button(action: onCreateRule) {
                 Label("Nova regra", systemImage: "plus")
             }
+        }
+        .padding(16)
+        .background(
+            TicoBrand.Palette.surface,
+            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(TicoBrand.Palette.primary.opacity(0.16))
+        }
+        .overlay(alignment: .leading) {
+            Capsule()
+                .fill(TicoBrand.Palette.accent)
+                .frame(width: 4)
+                .padding(.vertical, 14)
+                .offset(x: -2)
+                .accessibilityHidden(true)
         }
     }
 }

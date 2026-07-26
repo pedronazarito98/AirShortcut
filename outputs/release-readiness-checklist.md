@@ -35,7 +35,7 @@ geral é `PREVIEW`; os dois subescopos de release binária e suporte físico sã
 | Req. | Gate | Estado | Evidência ou blocker |
 | --- | --- | --- | --- |
 | RR-01 | CI macOS falha em build/test/shell/package | BLOCKED | `.github/workflows/ci.yml` e `script/ci_verify.sh` passam localmente, mas não há run remoto nem PR controlado vermelho; configuração não substitui execução. |
-| RR-02 | Gate local equivalente e contagem | PASS | `./script/ci_verify.sh --package`: 100 testes, ZIP ad hoc verificado e paths reportados. |
+| RR-02 | Gate local equivalente e contagem | PASS | `./script/ci_verify.sh --package`: 111 testes, ZIP ad hoc verificado e paths reportados após a consolidação Tico. |
 | RR-03 | Resumo não infere hardware | BLOCKED | o YAML contém o texto correto, mas não há summary de um job remoto bem-sucedido para servir como evidência. |
 | RR-04 | Atalho `⌘6` sem contradição | PASS | `README.md`; `outputs/qa-checklist.md`. |
 | RR-05 | Licença, status e private API | BLOCKED | status/private API estão no `README.md`; `LICENSE` aguarda decisão do proprietário e não foi inventada. |
@@ -62,7 +62,7 @@ geral é `PREVIEW`; os dois subescopos de release binária e suporte físico sã
 
 | Área | Decisão | Fonte |
 | --- | --- | --- |
-| Automatizado | PASS local | 100 testes, 8 regressões focadas, package ad hoc estrito |
+| Automatizado | PASS local | 111 testes, 8 regressões focadas, package ad hoc estrito |
 | Segurança | PASS da baseline automatizada | `SECURITY.md` e suite `SecurityRegressionTests` |
 | Documentação | PARTIAL | coerente para preview; licença segue BLOCKED |
 | Hardware físico | BLOCKED / NOT-RUN | relatório sanitizado de 2026-07-26 |

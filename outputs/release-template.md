@@ -44,11 +44,11 @@ Regras:
 
 | Verificação | Comando/evidência sanitizada | Resultado |
 | --- | --- | --- |
-| Bundle e código aninhado | `codesign --verify --deep --strict AirShortcut.app` | `<PASS/FAIL>` |
-| Detalhes e entitlements | `codesign -dvvv --entitlements :- AirShortcut.app` | `<resumo>` |
-| Gatekeeper | `spctl -a -vv AirShortcut.app` | `<PASS/FAIL/NOT-RUN>` |
+| Bundle e código aninhado | `codesign --verify --deep --strict Tico.app` | `<PASS/FAIL>` |
+| Detalhes e entitlements | `codesign -dvvv --entitlements :- Tico.app` | `<resumo>` |
+| Gatekeeper | `spctl -a -vv Tico.app` | `<PASS/FAIL/NOT-RUN>` |
 | Notarização | log de aceitação associado ao submission ID | `<PASS/FAIL/NOT-RUN>` |
-| Staple | `stapler validate AirShortcut.app` | `<PASS/FAIL/NOT-RUN>` |
+| Staple | `stapler validate Tico.app` | `<PASS/FAIL/NOT-RUN>` |
 | Máquina limpa | classe do ambiente e resultado, sem dados pessoais | `<PASS/FAIL/NOT-RUN>` |
 
 ## Limitações e status

@@ -39,7 +39,7 @@ final class AppSettingsStore: ObservableObject {
     }
 
     private enum Keys {
-        static let prefix = "com.airshortcut.settings."
+        static let prefix = TicoBrand.legacyUserDefaultsPrefix + "settings."
         static let version = prefix + "version"
         static let launchAtLogin = prefix + "launchAtLogin"
         static let showMenuBarExtra = prefix + "showMenuBarExtra"

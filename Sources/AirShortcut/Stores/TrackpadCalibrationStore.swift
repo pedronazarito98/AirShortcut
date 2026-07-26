@@ -14,7 +14,7 @@ final class TrackpadCalibrationStore: ObservableObject {
 
     init(
         defaults: UserDefaults = .standard,
-        storageKey: String = "com.airshortcut.trackpad-calibration"
+        storageKey: String = TicoBrand.legacyUserDefaultsPrefix + "trackpad-calibration"
     ) {
         self.defaults = defaults
         self.storageKey = storageKey

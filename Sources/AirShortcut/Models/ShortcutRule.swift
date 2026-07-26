@@ -104,7 +104,7 @@ struct ShortcutRule: Identifiable, Codable, Hashable, Sendable {
     var action: ShortcutAction {
         get {
             workflow.steps.first?.action
-                ?? .notification(title: "AirShortcut", body: "Workflow vazio")
+                ?? .notification(title: TicoBrand.displayName, body: "Workflow vazio")
         }
         set {
             if workflow.steps.isEmpty {

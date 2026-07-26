@@ -7,7 +7,10 @@ Baseline desta iniciativa: `27e0650`. Estado de readiness avaliado em
 
 ### Incluído
 
-- gate macOS compartilhado para build, 100 testes Swift, 8 regressões de
+- identidade pública Tico com ícone, wordmark, menu bar e compatibilidade
+  preservada para executável, bundle identifier, dados e permissões do
+  AirShortcut;
+- gate macOS compartilhado para build, 111 testes Swift, 8 regressões de
   segurança e verificação do package ad hoc;
 - documentação pública de status, segurança, captura privada, fallback
   público e replay isolado;
@@ -43,7 +46,7 @@ Baseline desta iniciativa: `27e0650`. Estado de readiness avaliado em
 
 ```bash
 ./script/ci_verify.sh --package
-./script/release_preflight.sh dist/AirShortcut.zip
+./script/release_preflight.sh dist/Tico.zip
 ./script/validate_hardware_report.sh outputs/hardware-validation/report-2026-07-26.md
 ```
 

@@ -1,6 +1,6 @@
-# AirShortcut
+# Tico
 
-AirShortcut is a native macOS 14+ utility for matching global keyboard, mouse, and advanced trackpad gestures to local actions. It uses SwiftUI for the product UI, CoreGraphics for listen-only keyboard/mouse capture, an isolated private-framework bridge for raw trackpad contacts, and versioned JSON persistence in Application Support.
+Tico is a native macOS 14+ utility for matching global keyboard, mouse, and advanced trackpad gestures to local actions. The internal SwiftPM product and executable remain named `AirShortcut` for compatibility. It uses SwiftUI for the product UI, CoreGraphics for listen-only keyboard/mouse capture, an isolated private-framework bridge for raw trackpad contacts, and versioned JSON persistence in `Application Support/AirShortcut`.
 
 ## Project status
 
@@ -32,7 +32,18 @@ Requirements: macOS 14+ and a Swift toolchain compatible with Swift 5.10.
 ./script/build_and_run.sh
 ```
 
-The script builds the `AirShortcut` SwiftPM executable, stages and ad hoc signs `dist/AirShortcut.app`, and opens the app. The Codex environment also exposes the same command as its **Run** action.
+The script builds the `AirShortcut` SwiftPM executable, stages and ad hoc signs
+`dist/Tico.app`, and opens the app. The Codex environment also exposes the same
+command as its **Run** action.
+
+Create an optimized local release candidate with:
+
+```sh
+./script/build_and_run.sh --release-package
+```
+
+Without a Developer ID certificate this package is for local QA only. See
+`outputs/tico-developer-id-guide.md` before distributing it to other Macs.
 
 Useful modes:
 
@@ -54,7 +65,7 @@ Run the same automated gate used by CI without opening the app:
 
 The gate validates shell syntax, builds the SwiftPM product, runs the complete
 test suite and the focused security regressions, then creates and verifies the
-extracted ad hoc ZIP at `dist/AirShortcut.zip`. Its summary also reports the
+extracted ad hoc ZIP at `dist/Tico.zip`. Its summary also reports the
 test count and local artifact paths. Omit `--package` only for a faster local
 iteration that does not produce package evidence.
 
@@ -75,9 +86,16 @@ Rules can be backed up or restored from the **File** menu using the versioned JS
 
 Global input capture requires Input Monitoring permission. Accessibility is requested only for automation capabilities that need it. macOS permissions are granted manually in System Settings; the app includes a status screen and refresh controls.
 
-Clicking **Iniciar captura** requests Input Monitoring automatically. If an older ad hoc build is still listed but the permission does not take effect, remove that old AirShortcut entry from **System Settings → Privacy & Security → Input Monitoring**, reopen the current app, and request access once. The local build script now preserves a stable designated requirement so later rebuilds remain the same TCC client.
+Clicking **Iniciar captura** requests Input Monitoring automatically. If an
+older ad hoc build is still listed but the permission does not take effect,
+remove that old AirShortcut/Tico entry from **System Settings → Privacy &
+Security → Input Monitoring**, reopen Tico, and request access once. The local
+build script preserves a stable designated requirement so later rebuilds remain
+the same TCC client.
 
-When permission is already denied and AirShortcut is missing from the list, use **Mostrar app no Finder**, click `+` in Input Monitoring, and select that bundle. Reopen AirShortcut after enabling it.
+When permission is already denied and Tico is missing from the list, use
+**Mostrar app no Finder**, click `+` in Input Monitoring, and select that
+bundle. Reopen Tico after enabling it.
 
 The event tap is listen-only and never blocks the original key or mouse event.
 
@@ -98,9 +116,27 @@ Continuous window actions map live swipe, pinch, or rotation progress to move/re
 
 ## Advanced global trackpad gestures
 
-When capture starts, AirShortcut dynamically loads Apple's private `MultitouchSupport` framework and observes raw contacts from the default trackpad. Frames are processed off the main thread by a session-based engine that tracks contact transitions, extracts gesture features, evaluates specialized recognizers, and arbitrates competing candidates. The recognizer supports single/double/triple taps, holds, TipTap left/right, anchored add/remove-finger gestures, ordered finger chords, directional swipes, pinch in/out, and rotation with configurable finger ranges (2–5), start/end regions, velocity, pressure range, sensitivity, device scope, fallback, and held modifiers. Single taps are delayed only when a competing double/triple tap exists. The rule editor can learn a private local template from three to five trajectory samples; ambiguous templates are rejected instead of guessed, and the library supports preview and duplication. If the private framework or expected ABI is unavailable, AirShortcut falls back to the public AppKit gesture monitor and marks unsupported capabilities.
+When capture starts, Tico dynamically loads Apple's private
+`MultitouchSupport` framework and observes raw contacts from the default
+trackpad. Frames are processed off the main thread by a session-based engine
+that tracks contact transitions, extracts gesture features, evaluates
+specialized recognizers, and arbitrates competing candidates. The recognizer
+supports single/double/triple taps, holds, TipTap left/right, anchored
+add/remove-finger gestures, ordered finger chords, directional swipes, pinch
+in/out, and rotation with configurable finger ranges (2–5), start/end regions,
+velocity, pressure range, sensitivity, device scope, fallback, and held
+modifiers. Single taps are delayed only when a competing double/triple tap
+exists. The rule editor can learn a private local template from three to five
+trajectory samples; ambiguous templates are rejected instead of guessed, and
+the library supports preview and duplication. If the private framework or
+expected ABI is unavailable, Tico falls back to the public AppKit gesture
+monitor and marks unsupported capabilities.
 
-This mode deliberately keeps App Sandbox disabled. The private bridge is isolated in `AirShortcutMultitouchBridge`, is loaded at runtime instead of linked directly, and never intercepts or modifies the system gesture. System-reserved gestures may therefore perform both the configured AirShortcut action and the original macOS action.
+This mode deliberately keeps App Sandbox disabled. The private bridge is
+isolated in `AirShortcutMultitouchBridge`, is loaded at runtime instead of
+linked directly, and never intercepts or modifies the system gesture.
+System-reserved gestures may therefore perform both the configured Tico action
+and the original macOS action.
 
 Open **Laboratório** (or press `⌘6`) to use four focused areas:
 
