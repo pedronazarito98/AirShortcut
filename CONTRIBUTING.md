@@ -1,40 +1,32 @@
-# Contributing to AirShortcut
+# Como contribuir com o Tico
 
-AirShortcut is currently a technical preview. Contributions are welcome for
-review, but the repository does not yet contain an owner-approved open source
-license. This is an explicit release-readiness blocker: until the project owner
-selects and adds a license, do not assume permission to copy, redistribute, or
-publish derivative versions of the code.
+O Tico ainda é um preview técnico. Contribuições são bem-vindas sob os termos
+da [licença MIT](LICENSE).
 
-## Before opening a pull request
+## Antes de abrir um pull request
 
-1. Keep changes focused and preserve the existing SwiftPM architecture.
-2. Run the automated gate without opening the app:
+1. Mantenha a mudança focada e preserve a arquitetura SwiftPM existente.
+2. Execute:
 
    ```sh
    ./script/ci_verify.sh --package
    ```
 
-3. Add or update tests for behavior changes. Do not weaken, skip, or remove
-   existing assertions to make the suite pass.
-4. Describe the change, its impact, and how reviewers can verify it.
+3. Adicione ou atualize testes quando o comportamento mudar.
+4. Não enfraqueça nem remova uma asserção somente para fazer a suíte passar.
+5. Explique o que mudou, o impacto e como verificar.
 
-The automated gate covers compilation, Swift tests, security regressions, and
-local ad hoc packaging. It does not prove physical trackpad support,
-private-framework compatibility across macOS versions, Developer ID signing,
-or notarization. Changes that affect trackpad behavior also require the manual
-matrix in `outputs/qa-checklist.md`; `NOT-RUN` is not a passing result.
+O gate automatizado cobre compilação, testes, regressões de segurança,
+replay e empacotamento ad hoc. Ele não comprova hardware físico,
+compatibilidade com todas as versões do macOS, Developer ID ou notarização.
 
-## Security reports
+Para uma mudança que altere o comportamento do trackpad, execute também o
+trecho aplicável do [checklist manual](outputs/qa-checklist.md). O relatório
+sanitizado de hardware é opcional e útil apenas para investigar uma regressão
+ou registrar uma combinação específica de macOS e dispositivo.
 
-Do not disclose a suspected vulnerability in a public issue or pull request.
-Follow the private reporting process in `SECURITY.md` and remove credentials,
-personal paths, device identifiers, TCC data, and raw trackpad recordings from
-all shared evidence.
+## Segurança
 
-## Licensing blocker
-
-The project owner must explicitly choose the license after reviewing the
-project's dependencies and distribution intent. Adding a `LICENSE` file is
-deferred until that decision is recorded; contributors must not add a license
-on the owner's behalf.
+Não divulgue uma possível vulnerabilidade em issue ou pull request público.
+Siga [SECURITY.md](SECURITY.md) e remova credenciais, caminhos pessoais,
+identificadores de dispositivos, dados do TCC e gravações brutas.

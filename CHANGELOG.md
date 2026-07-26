@@ -2,8 +2,7 @@
 
 ## Unreleased — technical preview
 
-Baseline desta iniciativa: `27e0650`. Estado de readiness avaliado em
-`1b7785c`.
+Baseline desta iniciativa: `27e0650`. Consolidação integrada em `87f65ef`.
 
 ### Incluído
 
@@ -12,6 +11,7 @@ Baseline desta iniciativa: `27e0650`. Estado de readiness avaliado em
   AirShortcut;
 - gate macOS compartilhado para build, 111 testes Swift, 8 regressões de
   segurança e verificação do package ad hoc;
+- licença MIT adicionada e CI remoto confirmado no commit de consolidação;
 - documentação pública de status, segurança, captura privada, fallback
   público e replay isolado;
 - pacote sanitizado para evidência física e validador de relatório;
@@ -24,13 +24,15 @@ Baseline desta iniciativa: `27e0650`. Estado de readiness avaliado em
 
 - Build/test/package local: PASS.
 - Replay 0.5×, 1× e 2× sem execução de ações: PASS automatizado.
-- Trackpad físico interno e Magic Trackpad: NOT-RUN.
-- Fallback, permission denied, sleep/wake, reconexão e falsos positivos em
-  hardware real: NOT-RUN.
+- Trackpad interno: validação manual concluída pelo responsável pelo produto;
+  o relatório sanitizado é opcional.
+- Magic Trackpad e reconexão de hardware externo: NOT-RUN por falta de
+  dispositivo.
+- Pressão/Force Touch: suporte condicional à capacidade observada no hardware.
 - Assinatura do ZIP local: ad hoc/development.
 - Developer ID, Hardened Runtime de distribuição, notarização, staple,
   Gatekeeper e máquina limpa: BLOCKED/NOT-RUN.
-- Licença open source: BLOCKED aguardando decisão do proprietário.
+- Licença open source: MIT.
 
 ### Limitações
 
@@ -47,8 +49,8 @@ Baseline desta iniciativa: `27e0650`. Estado de readiness avaliado em
 ```bash
 ./script/ci_verify.sh --package
 ./script/release_preflight.sh dist/Tico.zip
-./script/validate_hardware_report.sh outputs/hardware-validation/report-2026-07-26.md
+./script/validate_hardware_report.sh outputs/hardware-validation/report-AAAA-MM-DD.md
 ```
 
-Consulte `outputs/release-readiness-checklist.md` para o mapa RR-01–RR-14 e
-`outputs/follow-up-issues.md` para os gaps ainda abertos.
+Consulte `outputs/roadmap.md` para o estado atual e `outputs/distribuicao.md`
+para os gates de uma release pública.

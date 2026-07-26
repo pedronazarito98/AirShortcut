@@ -1,31 +1,39 @@
-# Hardware validation evidence
+# Evidências de validação de hardware
 
-This directory contains sanitized summaries of manual AirShortcut validation.
-It is evidence for a specific macOS and device class, not a claim of universal
-hardware support.
+Esta pasta guarda modelos e fixtures sanitizadas. Um relatório é opcional: ele
+comprova somente a versão do macOS e a classe de dispositivo realmente
+testadas, quando for útil investigar uma regressão física.
 
-1. Copy `report-template.md` to `report-YYYY-MM-DD.md`.
-2. Use one row per observed scenario and device class.
-3. Record only objective, summarized observations.
-4. Run `script/validate_hardware_report.sh` before committing the report.
+## Como registrar (opcional)
 
-Allowed values:
+1. Copie `report-template.md` para `report-AAAA-MM-DD.md`.
+2. Preencha uma linha por cenário observado.
+3. Use somente `PASS`, `FAIL` ou `NOT-RUN`.
+4. Execute:
 
-- Device class: `internal`, `magic-trackpad`, `other`, `unknown`
-- Capture mode: `advanced-private`, `public-fallback`, `unavailable`
-- Status: `PASS`, `FAIL`, `NOT-RUN`
+   ```sh
+   ./script/validate_hardware_report.sh caminho-do-relatorio.md
+   ```
 
-`NOT-RUN` means the scenario was not executed or the required hardware was not
-available. It never counts as `PASS`. Missing required physical rows block a
-physical-support PASS.
+Os nomes técnicos das colunas e os valores de classe permanecem em inglês
+porque fazem parte do contrato do validador.
 
-## Never commit
+Classes permitidas:
 
-- Device serial numbers, computer names, usernames, or personal paths
-- TCC database dumps or permission-database identifiers
-- Raw trackpad frames, touch coordinates, or personal replay sessions
-- Unredacted logs that expose user, device, file, or application identifiers
+- `internal`
+- `magic-trackpad`
+- `other`
+- `unknown`
 
-Use macOS version, non-identifying device class, capture mode, and a concise
-behavioral summary. `sample-report.md` demonstrates the format without real
-personal or hardware data.
+Modos permitidos:
+
+- `advanced-private`
+- `public-fallback`
+- `unavailable`
+
+## Nunca registrar
+
+- número de série, nome do computador ou usuário;
+- dump ou identificador do TCC;
+- frames brutos, coordenadas ou sessões pessoais;
+- logs com aplicativos, arquivos ou caminhos pessoais.
