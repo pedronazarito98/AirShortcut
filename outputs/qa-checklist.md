@@ -1,59 +1,72 @@
 # AirShortcut QA checklist
 
-## Automated
+Use one row per observed result. Allowed statuses are `PASS`, `FAIL`, and
+`NOT-RUN`. `NOT-RUN` means the scenario was not executed or the required
+hardware was unavailable; it is never equivalent to `PASS`. Replace the
+placeholder in **Observed** and add objective notes before changing a status.
 
-- `swift build --product AirShortcut`
-- `swift test`
-- `bash -n script/build_and_run.sh`
-- `plutil -lint dist/AirShortcut.app/Contents/Info.plist`
-- `codesign --verify --deep --strict --verbose=2 dist/AirShortcut.app`
-- `./script/build_and_run.sh --verify`
+## Automated gate
 
-## Manual: clean permission state
+Run `./script/ci_verify.sh --package` without opening the app.
 
-- Launch the `.app` bundle and confirm the main window comes to the front.
-- Verify Accessibility and Input Monitoring display their real current state.
-- With Input Monitoring denied, verify capture does not start and an explanation appears.
-- Grant a permission in System Settings, return to AirShortcut, and refresh.
+| Scenario | Expected | Observed | Status | Notes |
+| --- | --- | --- | --- | --- |
+| Shared build/test gate | Build, complete Swift suite, and security regressions pass with a reported test count | Not executed in this session | NOT-RUN | Attach the command result or CI run |
+| Ad hoc package | Extracted `dist/AirShortcut.zip` passes strict signature verification | Not executed in this session | NOT-RUN | This does not prove Developer ID or notarization |
 
-## Manual: capture and rules
+Automated success does not validate physical trackpad behavior. Continue with
+the manual gates on the target Mac and device.
 
-- Start capture and verify a keyboard event appears without being consumed.
-- Verify an extra mouse button appears with the correct number.
-- Record a trigger into a new rule, save it, relaunch, and verify persistence.
-- Disable the rule and verify it does not run.
-- Re-enable it and verify the configured action produces one log entry.
-- Verify delete, import, and export retain stable rule identifiers.
+## Manual gate: permissions and input safety
 
-## Manual: advanced global trackpad
+| Scenario | Expected | Observed | Status | Notes |
+| --- | --- | --- | --- | --- |
+| Main window | The staged app opens and brings its main window forward | Not executed in this session | NOT-RUN | Record macOS version |
+| Permission state | Accessibility and Input Monitoring show their current system state | Not executed in this session | NOT-RUN | Do not attach TCC dumps |
+| Input Monitoring denied | Capture stays stopped and an explanation is visible | Not executed in this session | NOT-RUN | Test before granting permission |
+| Permission refresh | Granting permission and refreshing updates the app state | Not executed in this session | NOT-RUN | Reopen the app when macOS requires it |
+| Keyboard pass-through | A captured keyboard event still reaches the original app | Not executed in this session | NOT-RUN | Capture must remain listen-only |
+| Mouse pass-through | A captured mouse event still reaches the original app | Not executed in this session | NOT-RUN | Include an extra button when available |
 
-- Confirm the overview reports `Global avançada`, not the AppKit fallback.
-- Open the Laboratory with `⌘4` and confirm the four tabs: Ao vivo, Calibração, Sessões, and Validação.
-- In Validação, perform tap and hold, four directional swipes, pinch in/out, and clockwise/counterclockwise rotation; each row must receive a green check.
-- Record a real session, confirm the frame count increases, export it, import it, and replay at 0.5×, 1×, and 2×.
-- Confirm replay updates the laboratory but never executes a rule or adds an action log entry.
-- Apply conservative, balanced, and responsive presets to the same borderline gesture and confirm the diagnostic explains different outcomes.
-- Configure minimum and maximum velocity and verify rejected gestures cite the violated limit.
-- Verify hold fires once while fingers remain down.
-- Verify legacy quadrants plus start/end edges, corners, and all 3×3 grid cells.
-- Confirm the HID list shows the internal trackpad and a Magic Trackpad when one is connected; because the private callback uses the default device, validate each physical device separately and mark the corresponding check manually.
-- Sleep and wake the Mac, then confirm raw capture resumes.
-- Disconnect/reconnect an external trackpad and confirm the app remains responsive; restore advanced capture if the private callback does not resume automatically.
-- Activate public fallback, perform a public swipe/pinch/rotation, and confirm its validation check completes without breaking keyboard or mouse capture.
-- Start normal-use observation, browse normally, mark any accidental recognition immediately, then finish the session and review the false-positive rate.
+## Manual gate: advanced trackpad
 
-## Manual: actions and safety
+Open **Laboratório** with `⌘6`. Record the device as `internal`,
+`magic-trackpad`, or another non-identifying class. Validate each connected
+device separately.
 
-- Open a valid URL and app path.
-- Show a notification after granting notification permission.
-- Trigger an invalid action and verify the failure is visible without crashing.
-- Cancel shell confirmation and verify no process launches.
-- Confirm an approved short shell command and verify exit status/output handling.
+| Scenario | Expected | Observed | Status | Notes |
+| --- | --- | --- | --- | --- |
+| Advanced capability | Overview reports advanced private capture when the framework, ABI, permission, and device are available | Not executed in this session | NOT-RUN | A fallback result is not an advanced PASS |
+| Tap | Validation accepts the configured tap once | Not executed in this session | NOT-RUN | Record finger count |
+| Hold | Validation fires once while contacts remain down | Not executed in this session | NOT-RUN | Confirm no repeated firing |
+| Swipe left | Validation accepts a left swipe with the expected fingers | Not executed in this session | NOT-RUN | Record rejection reason on failure |
+| Swipe right | Validation accepts a right swipe with the expected fingers | Not executed in this session | NOT-RUN | Record rejection reason on failure |
+| Swipe up | Validation accepts an upward swipe with the expected fingers | Not executed in this session | NOT-RUN | Record rejection reason on failure |
+| Swipe down | Validation accepts a downward swipe with the expected fingers | Not executed in this session | NOT-RUN | Record rejection reason on failure |
+| Pinch in | Validation accepts pinch-in and reports coherent progress | Not executed in this session | NOT-RUN | Record finger count |
+| Pinch out | Validation accepts pinch-out and reports coherent progress | Not executed in this session | NOT-RUN | Record finger count |
+| Clockwise rotation | Validation accepts clockwise rotation and reports coherent progress | Not executed in this session | NOT-RUN | Record finger count |
+| Counterclockwise rotation | Validation accepts counterclockwise rotation and reports coherent progress | Not executed in this session | NOT-RUN | Record finger count |
+| Sleep and wake | Raw capture resumes after a real sleep/wake cycle | Not executed in this session | NOT-RUN | A simulated pause is insufficient |
+| Device reconnection | Disconnecting and reconnecting an external trackpad keeps the app responsive and restores or explains capture | Not executed in this session | NOT-RUN | Mark NOT-RUN when no external device exists |
+| Public fallback | Forced fallback accepts supported public gestures and labels unavailable capabilities | Not executed in this session | NOT-RUN | Run `./script/build_and_run.sh --fallback-diagnostic` |
+| Fallback input safety | Keyboard and mouse capture remain listen-only while fallback is active | Not executed in this session | NOT-RUN | Confirm original input is not consumed |
+| False-positive observation | Normal use completes for the chosen duration with every accidental recognition recorded | Not executed in this session | NOT-RUN | Record duration and objective count |
 
-## Desktop regression
+## Manual gate: replay isolation
 
-- Light and Dark appearances.
-- Keyboard navigation, menu commands, and toolbar actions.
-- Main window reopening from menu bar.
-- Settings persistence and login item state.
-- Relaunch after bundle rebuild without losing rule data.
+| Scenario | Expected | Observed | Status | Notes |
+| --- | --- | --- | --- | --- |
+| Record/export/import | A real session increases frame count and round-trips as sanitized JSON | Not executed in this session | NOT-RUN | Do not commit raw personal sessions |
+| Replay 0.5× | Laboratory state and progress update without an action log entry | Not executed in this session | NOT-RUN | Record final diagnostic |
+| Replay 1× | Laboratory state and progress update without an action log entry | Not executed in this session | NOT-RUN | Record final diagnostic |
+| Replay 2× | Laboratory state and progress update without an action log entry | Not executed in this session | NOT-RUN | Record final diagnostic |
+
+## Manual gate: rules, actions, and desktop regression
+
+| Scenario | Expected | Observed | Status | Notes |
+| --- | --- | --- | --- | --- |
+| Rule lifecycle | Record, save, relaunch, disable, enable, delete, import, and export preserve the documented behavior and stable identifiers | Not executed in this session | NOT-RUN | Imported rules must start disabled |
+| Action safety | Invalid actions fail visibly; cancelled shell approval launches no process; approved action reports status/output | Not executed in this session | NOT-RUN | Use synthetic commands and data |
+| Appearance and navigation | Light/Dark appearance, keyboard navigation, menus, toolbar, and menu-bar reopening work | Not executed in this session | NOT-RUN | Record accessibility observations |
+| Settings and relaunch | Settings and login-item state persist; a bundle rebuild does not lose rule data | Not executed in this session | NOT-RUN | Back up local rules first |

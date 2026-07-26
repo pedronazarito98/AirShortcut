@@ -2,6 +2,28 @@
 
 AirShortcut is a native macOS 14+ utility for matching global keyboard, mouse, and advanced trackpad gestures to local actions. It uses SwiftUI for the product UI, CoreGraphics for listen-only keyboard/mouse capture, an isolated private-framework bridge for raw trackpad contacts, and versioned JSON persistence in Application Support.
 
+## Project status
+
+AirShortcut is a **technical preview** for development and evaluation on
+macOS 14+. Compatibility with every macOS release or trackpad model is not
+promised: advanced capture depends on the undocumented
+`MultitouchSupport` framework and must be validated on real hardware after
+system updates. The current package is ad hoc signed for local use. It is not a
+Developer ID, Gatekeeper-ready, or notarized release, and it is distributed
+outside the Mac App Store.
+
+Trackpad evidence has four distinct sources:
+
+- **Advanced private capture** receives continuous raw contacts when the
+  private framework, expected ABI, hardware, and Input Monitoring permission
+  are available.
+- **Public AppKit fallback** keeps supported system gesture events available
+  but does not provide the same pressure, contact, or continuous-phase detail.
+- **Replay** feeds sanitized fixtures into the laboratory for deterministic
+  diagnostics and never executes rules or actions.
+- **Real hardware validation** uses the manual QA matrix and is required for
+  device/OS support claims; a green automated gate does not replace it.
+
 ## Run locally
 
 Requirements: macOS 14+ and a Swift toolchain compatible with Swift 5.10.
@@ -22,7 +44,30 @@ Useful modes:
 ./script/build_and_run.sh --debug
 ```
 
-Run the unit suite with `swift test`.
+## Reproducible verification
+
+Run the same automated gate used by CI without opening the app:
+
+```sh
+./script/ci_verify.sh --package
+```
+
+The gate validates shell syntax, builds the SwiftPM product, runs the complete
+test suite and the focused security regressions, then creates and verifies the
+extracted ad hoc ZIP at `dist/AirShortcut.zip`. Its summary also reports the
+test count and local artifact paths. Omit `--package` only for a faster local
+iteration that does not produce package evidence.
+
+CI runs this command for pull requests and pushes to `main`. A green CI result
+covers compilation, automated tests, security regressions, and local ad hoc
+packaging. It does **not** validate a physical trackpad, private-framework
+compatibility on every macOS/device, Developer ID signing, Gatekeeper
+acceptance, or notarization.
+
+If SwiftPM reports `ModuleCache: Operation not permitted` in a restricted local
+environment, run `swift test --disable-sandbox` to confirm the suite with an
+environmental sandbox exception. This is a recovery command for local cache
+permissions, not a replacement for the canonical CI gate.
 
 Rules can be backed up or restored from the **File** menu using the versioned JSON import/export commands. Imports merge by stable rule identifier so existing unrelated rules are preserved. Every imported rule is staged disabled and must be reviewed and enabled locally before it can execute.
 
@@ -82,4 +127,7 @@ Rule documents are currently version 6. Older documents are decoded, backed up b
 - Mac App Store distribution is not compatible with this experimental mode.
 - The local development bundle is ad hoc signed and is not a distributable/notarized release.
 
-See `outputs/architecture.md`, `outputs/trackpad-research.md`, and `outputs/signing-and-distribution.md` for design and release details.
+See `SECURITY.md`, `outputs/relatorio-correcoes-seguranca.pt-BR.md`,
+`outputs/evidencias-validacao-seguranca.pt-BR.md`,
+`outputs/signing-and-distribution.md`, and `outputs/trackpad-research.md` for
+the security, distribution, and platform limitation reports.

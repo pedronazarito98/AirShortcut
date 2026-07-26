@@ -19,6 +19,14 @@ vulnerability** do GitHub para manter os detalhes em sigilo. Inclua:
 Não inclua credenciais reais, documentos privados ou gravações pessoais do
 trackpad. Substitua valores sensíveis por exemplos sintéticos.
 
+Se o reporte privado do GitHub ainda não estiver habilitado, não converta o
+relato em issue, discussion ou pull request público. Aguarde a publicação de
+um contato privado confirmado pelo proprietário do projeto.
+
+Credenciais de assinatura, certificados exportados, senhas, chaves de API da
+Apple, perfis do `notarytool` e logs que exponham esses valores nunca devem
+entrar no repositório, em anexos públicos ou em evidências de reprodução.
+
 ## Fronteiras de segurança
 
 O AirShortcut processa arquivos JSON selecionados pelo usuário e pode executar

@@ -2,7 +2,11 @@
 
 ## Current development artifact
 
-`script/build_and_run.sh` builds the SwiftPM executable, stages `dist/AirShortcut.app`, writes bundle metadata, applies an ad hoc signature, and opens the bundle. This is suitable for local development only; notarization is not required for that workflow.
+`script/build_and_run.sh` builds the SwiftPM executable, stages `dist/AirShortcut.app`, writes bundle metadata, and applies an ad hoc signature. The `--package` mode is a local dry-run that creates and strictly verifies `dist/AirShortcut.zip` without opening the app.
+
+Both outputs are suitable for local development only. An ad hoc signature is
+not a Developer ID signature, does not carry notarization evidence, and must
+not be described as Gatekeeper-ready or as a distributable release.
 
 For local ad hoc builds, the script embeds an explicit development-only designated requirement based on the stable bundle identifier. Without it, the default ad hoc identity is a changing `cdhash`, so TCC may forget Input Monitoring after every rebuild. Set `AIRSHORTCUT_CODESIGN_IDENTITY` to a real code-signing identity when one becomes available; the script then uses the certificate-backed identity instead.
 
@@ -14,14 +18,25 @@ The practical MVP path is a non-sandboxed Developer ID application distributed o
 
 Advanced global trackpad gestures depend on a private Apple framework loaded dynamically. This rules out Mac App Store review and increases compatibility risk, but it does not change the local ad hoc workflow. A direct Developer ID release must be tested on each supported macOS version and retain the public fallback when the private ABI is unavailable.
 
-Required prerequisites:
+Required Developer ID release gates:
 
 1. Choose and keep a stable reverse-DNS bundle identifier.
 2. Enroll in the Apple Developer Program and install a Developer ID Application certificate.
-3. Build a release artifact with Hardened Runtime enabled.
-4. Sign every nested executable and then the outer bundle with the same identity.
-5. Archive the signed app, submit it with `notarytool`, wait for acceptance, and staple the ticket.
-6. Validate the final artifact on a clean Mac/user account.
+3. Build a release artifact with Hardened Runtime enabled and inspect the required entitlements.
+4. Sign every nested framework, library, helper, and executable before signing the outer bundle with the same Developer ID identity.
+5. Verify the nested and outer signatures with `codesign --verify --deep --strict`.
+6. Archive the signed app, submit it with `notarytool`, and retain explicit acceptance evidence.
+7. Staple the accepted ticket and require `stapler validate` to succeed.
+8. Run Gatekeeper assessment and launch the final artifact on a clean Mac or clean user account before approval.
+
+Failure or `NOT-RUN` at any required gate stops release approval. A successful
+local ad hoc dry-run cannot substitute for Developer ID, Hardened Runtime,
+notarization acceptance, stapling, or clean-machine execution.
+
+Apple credentials stay outside the repository and release reports. Provide
+signing identities and `notarytool` credentials through the owner's protected
+local keychain or CI secret store; never commit certificates, passwords,
+profiles, API keys, or unsanitized notarization logs.
 
 ## Entitlement policy
 
@@ -38,4 +53,8 @@ spctl -a -vv --type execute dist/AirShortcut.app
 plutil -lint dist/AirShortcut.app/Contents/Info.plist
 ```
 
-For a release candidate, also inspect the notarization log and run `stapler validate` after stapling. Gatekeeper rejection of the current ad hoc build is expected and is distinct from a compilation or local launch failure.
+For a Developer ID release candidate, also retain the accepted notarization
+submission identifier, inspect a sanitized notarization log, run `stapler
+validate` after stapling, and record the clean-machine result. Gatekeeper
+rejection of the current ad hoc build is expected and is distinct from a
+compilation or local launch failure.
