@@ -391,8 +391,11 @@ final class TrackpadGestureService: ObservableObject {
         shouldResumeAfterWake = isRunning
         frameProvider?.stop()
         frameProvider = nil
-        worker.cancel { [weak self] output in
-            Task { @MainActor in self?.handleRawOutput(output) }
+        let owner = WeakTrackpadGestureServiceBox(self)
+        worker.cancel { output in
+            Task { @MainActor in
+                owner.value?.handleRawOutput(output)
+            }
         }
         activeTouchCount = 0
         didReceiveRawFrame = false

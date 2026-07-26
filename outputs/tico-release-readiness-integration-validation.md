@@ -40,6 +40,16 @@
 | Build SwiftPM release | PASS |
 | Preflight do release candidate | PASS ad hoc/development |
 | Relatório físico sanitizado | estrutura e sanitização PASS |
+| Build com `-strict-concurrency=complete` | PASS com Swift 6.3.3 |
+
+## Compatibilidade com o runner
+
+O primeiro job remoto expôs uma diferença de compilador no callback de
+suspensão do trackpad: o runner rejeitou a captura de uma variável `self`
+fraca dentro de código concorrente. O callback passou a usar a mesma caixa
+fraca imutável e `Sendable` já usada no pipeline principal, mantendo a entrega
+de estado no `MainActor`. O build com concorrência estrita e o teste de
+sleep/wake passaram após a correção.
 
 ## Limites preservados
 
