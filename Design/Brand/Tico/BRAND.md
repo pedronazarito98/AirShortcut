@@ -17,7 +17,7 @@ ou mudanças na posição dos pontos não fazem parte da marca principal.
 
 ## Cores
 
-### Light mode
+### Modo claro
 
 | Token | Cor |
 | --- | --- |
@@ -28,7 +28,7 @@ ou mudanças na posição dos pontos não fazem parte da marca principal.
 | Text | `#111827` |
 | Secondary text | `#5B6475` |
 
-### Dark mode
+### Modo escuro
 
 | Token | Cor |
 | --- | --- |
