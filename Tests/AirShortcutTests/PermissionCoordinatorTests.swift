@@ -35,6 +35,25 @@ final class PermissionCoordinatorTests: XCTestCase {
         XCTAssertTrue(refreshed.canCaptureGlobalInput)
     }
 
+    func testRefreshRevokesCaptureWhenCurrentAuthorizationIsDenied() {
+        var state = InputMonitoringAuthorizationState.granted
+        let coordinator = PermissionCoordinator(
+            accessibilityCheck: { false },
+            accessibilityRequest: { false },
+            inputMonitoringCheck: { state },
+            inputMonitoringRequest: { false },
+            settingsOpener: { _ in }
+        )
+        XCTAssertTrue(coordinator.status.canCaptureGlobalInput)
+
+        state = .denied
+        let refreshed = coordinator.refresh()
+
+        XCTAssertEqual(refreshed.inputMonitoring, .denied)
+        XCTAssertFalse(refreshed.canCaptureGlobalInput)
+        XCTAssertEqual(coordinator.status, refreshed)
+    }
+
     func testInputMonitoringSettingsUsesPrivacyListenEventPane() {
         var openedURL: URL?
         let coordinator = PermissionCoordinator(

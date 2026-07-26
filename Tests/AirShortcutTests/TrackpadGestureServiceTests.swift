@@ -47,6 +47,39 @@ final class TrackpadGestureServiceTests: XCTestCase {
     }
 
     @MainActor
+    func testUnavailablePrivateProviderActivatesIdentifiablePublicFallback() {
+        let provider = UnavailableTrackpadFrameProvider(
+            reason: "Captura privada indisponível neste ambiente."
+        )
+        let service = TrackpadGestureService(providerFactory: { provider })
+
+        service.start { _ in }
+
+        XCTAssertEqual(provider.startCount, 1)
+        XCTAssertEqual(service.captureMode, .systemGestureFallback)
+        XCTAssertEqual(
+            service.startupError,
+            "Captura privada indisponível neste ambiente."
+        )
+        XCTAssertTrue(service.isRunning)
+        service.stop()
+    }
+
+    @MainActor
+    func testPublicFallbackDoesNotMonitorKeyboardOrMouseEvents() {
+        let mask = TrackpadGestureService.fallbackEventMask
+
+        XCTAssertTrue(mask.contains(.magnify))
+        XCTAssertTrue(mask.contains(.rotate))
+        XCTAssertTrue(mask.contains(.swipe))
+        XCTAssertFalse(mask.contains(.keyDown))
+        XCTAssertFalse(mask.contains(.flagsChanged))
+        XCTAssertFalse(mask.contains(.leftMouseDown))
+        XCTAssertFalse(mask.contains(.rightMouseDown))
+        XCTAssertFalse(mask.contains(.otherMouseDown))
+    }
+
+    @MainActor
     func testUnclassifiedTrajectoryIsDeliveredToTriggerRecorderPipeline() async {
         let start = Date(timeIntervalSince1970: 200)
         let centroids = [
@@ -111,5 +144,25 @@ final class TrackpadGestureServiceTests: XCTestCase {
             velocity: TrackpadPoint(x: 0, y: 0),
             pressure: 0.5
         )
+    }
+}
+
+private final class UnavailableTrackpadFrameProvider: TrackpadFrameProvider {
+    let capabilities = TrackpadProviderCapabilities.privateMultitouch
+    private(set) var isRunning = false
+    private(set) var startCount = 0
+    private let reason: String
+
+    init(reason: String) {
+        self.reason = reason
+    }
+
+    func start(onFrame: @escaping @Sendable (RawTrackpadFrame) -> Void) throws {
+        startCount += 1
+        throw TrackpadFrameProviderError.unavailable(reason)
+    }
+
+    func stop() {
+        isRunning = false
     }
 }
