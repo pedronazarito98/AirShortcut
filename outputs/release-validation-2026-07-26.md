@@ -1,7 +1,9 @@
 # AirShortcut — validação de distribuição
 
-**Data**: 2026-07-26  
-**Resultado**: `not-attempted`  
+**Data**: 2026-07-26
+
+**Resultado**: `not-attempted`
+
 **Blocker**: nenhuma identidade válida de codesign/Developer ID Application
 está disponível neste ambiente (`security find-identity -p codesigning -v`
 retornou `0 valid identities found`).

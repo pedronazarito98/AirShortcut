@@ -1,7 +1,9 @@
 # AirShortcut — dry-run ad hoc de empacotamento
 
-**Data**: 2026-07-26  
-**Classificação**: desenvolvimento/dry-run ad hoc  
+**Data**: 2026-07-26
+
+**Classificação**: desenvolvimento/dry-run ad hoc
+
 **Não é**: release distribuível, artefato Developer ID ou artefato notarizado
 
 ## Identificação

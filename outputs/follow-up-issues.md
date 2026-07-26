@@ -6,7 +6,8 @@ substitui a execução dos critérios de aceite.
 
 ## ISSUE-01 — Definir licença open source
 
-**Estado**: OPEN / release blocker  
+**Estado**: OPEN / release blocker
+
 **Escopo**: RR-05
 
 O repositório não possui `LICENSE`. A escolha tem implicações legais e não
@@ -21,7 +22,8 @@ Critérios de aceite:
 
 ## ISSUE-02 — Executar matriz física no trackpad interno
 
-**Estado**: OPEN / physical-support blocker  
+**Estado**: OPEN / physical-support blocker
+
 **Escopo**: RR-07, RR-08, RR-10
 
 Critérios de aceite:
@@ -34,7 +36,8 @@ Critérios de aceite:
 
 ## ISSUE-03 — Executar matriz física no Magic Trackpad
 
-**Estado**: OPEN / physical-support blocker  
+**Estado**: OPEN / physical-support blocker
+
 **Escopo**: RR-07, RR-10
 
 Critérios de aceite:
@@ -46,7 +49,8 @@ Critérios de aceite:
 
 ## ISSUE-04 — Produzir artefato Developer ID verificável
 
-**Estado**: OPEN / distribution blocker  
+**Estado**: OPEN / distribution blocker
+
 **Escopo**: RR-13, RR-14
 
 Critérios de aceite:
@@ -61,7 +65,8 @@ Critérios de aceite:
 
 ## ISSUE-05 — Confirmar gate remoto do GitHub Actions
 
-**Estado**: OPEN / evidence gap  
+**Estado**: OPEN / evidence gap
+
 **Escopo**: RR-01, RR-03
 
 Critérios de aceite:
@@ -73,7 +78,8 @@ Critérios de aceite:
 
 ## ISSUE-06 — Executar Verifier independente
 
-**Estado**: OPEN / initiative close gate  
+**Estado**: OPEN / initiative close gate
+
 **Escopo**: RR-15–RR-18
 
 Critérios de aceite:

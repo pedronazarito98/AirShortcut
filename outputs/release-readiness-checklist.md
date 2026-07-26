@@ -1,8 +1,11 @@
 # AirShortcut — decisão de release readiness
 
-**Data da avaliação**: 2026-07-26  
-**Status geral**: `PREVIEW`  
-**Distribuição Developer ID**: `BLOCKED`  
+**Data da avaliação**: 2026-07-26
+
+**Status geral**: `PREVIEW`
+
+**Distribuição Developer ID**: `BLOCKED`
+
 **Suporte físico de trackpad**: `BLOCKED` (`NOT-RUN`)
 
 `PREVIEW` autoriza apenas publicar o código como technical preview para
