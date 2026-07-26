@@ -2,13 +2,13 @@
 
 **Date**: 2026-07-26
 **Spec**: `.specs/features/release-readiness/spec.md`
-**Diff range**: `27e0650..837f3c3`
-**Verifier**: second independent sub-agent (author != verifier)
+**Diff range**: `27e0650..57fb0ed`
+**Verifier**: third independent sub-agent (author != verifier)
 **Verdict**: **BLOCKED**
 
 The automated preview baseline is healthy, but the feature is not fully
-verified. The fallback-input mutant found by the second independent sensor was
-killed by the post-review correction recorded below. Explicit `NOT-RUN` and
+verified. A third fresh-eyes pass re-derived all RR-01–RR-18 outcomes, reran
+the package gate, and killed three new scratch mutants. Explicit `NOT-RUN` and
 external blockers are not counted as PASS.
 
 ## Task Completion
@@ -42,8 +42,8 @@ external blockers are not counted as PASS.
 | RR-13 | Developer ID checklist requires nested signing, Hardened Runtime, notarization acceptance, staple validation, and clean-machine execution. | `outputs/release-validation-2026-07-26.md:11-39` and `outputs/release-template.md:32-52` require every gate and preserve `NOT-RUN`. | **PASS** |
 | RR-14 | A published release includes version, commit, signing, minimum macOS, private-API limitation, and verification evidence. | `outputs/release-template.md:6-18,20-61` defines the contract, but no publishable Developer ID release artifact/notes exist. | **BLOCKED** |
 | RR-15 | Independent verifier maps every AC to evidence or a gap. | This report maps RR-01-RR-18 with file/line evidence or explicit zero/blocker. | **PASS** |
-| RR-16 | One to three scratch behavior mutations are killed; survivors become fix tasks. | Post-review test asserts the complete allowed fallback mask at `Tests/AirShortcutTests/TrackpadGestureServiceTests.swift:69-80`; focused scratch rerun with M1 (`.mouseMoved`) failed with the expected mask mismatch. M2 and M3 remain killed by the second sensor. | **PASS** |
-| RR-17 | Any AC gap/survivor/precision/deviation/gate failure records a grounded lesson through `scripts/lessons.py`. | `scripts/lessons.py add` recorded candidate `L-005` with signal `surviving_mutant`, grounded at M1 in this report; the four prior `ac_gap` lessons remain present. | **PASS** |
+| RR-16 | One to three scratch behavior mutations are killed; survivors become fix tasks. | Third sensor killed 3/3 new mutants: omitted `.swipe` from the exact fallback mask, removed the username sanitizer, and misclassified an ad hoc signature as Developer ID. | **PASS** |
+| RR-17 | Any AC gap/survivor/precision/deviation/gate failure records a grounded lesson through `scripts/lessons.py`. | `scripts/lessons.py add` recorded candidate `L-005` for the prior second-sensor M1; the four prior `ac_gap` lessons remain present, and this clean third sensor adds no new lesson. | **PASS** |
 | RR-18 | Required ACs still unverified after the bounded cycle are escalated as not ready. | `outputs/release-readiness-checklist.md:63-70` lists blockers; this independent verdict remains BLOCKED and does not silently complete them. | **PASS** |
 
 **Spec-anchored status**: 12/18 PASS; 0/18 FAIL; 6/18 BLOCKED; 0 false PASS.
@@ -55,7 +55,7 @@ external blockers are not counted as PASS.
   `CLANG_MODULE_CACHE_PATH`, `SWIFTPM_MODULECACHE_OVERRIDE`, and
   `XDG_CACHE_HOME` pointed to `/private/tmp`, with
   `AIRSHORTCUT_DISABLE_SWIFTPM_SANDBOX=1`.
-- **Result at `837f3c3`**: **PASS**
+- **Result at `57fb0ed`**: **PASS**
 - **Swift suite**: 100 executed, 100 passed, 0 failed, 0 skipped.
 - **Focused security suite**: 8 executed, 8 passed, 0 failed, 0 skipped.
 - **Package**: `dist/AirShortcut.zip`; extracted app passed
@@ -64,36 +64,30 @@ external blockers are not counted as PASS.
   notarization not exercised.
 - **Test count**: author freeze records 97 baseline and 100 current (+3);
   the verifier independently observed 100 current tests.
-- **Diff hygiene**: `git diff --check 27e0650..837f3c3` passed.
-- **Post-review gate after `24d6f4d`**: `./script/ci_verify.sh --package`
-  passed with 100/100 Swift tests, 8/8 focused security tests, and verified
+- **Diff hygiene**: `git diff --check 27e0650..57fb0ed` passed.
+- **Third-verifier gate**: `./script/ci_verify.sh --package` passed with
+  100/100 Swift tests, 8/8 focused security tests, and verified
   `dist/AirShortcut.zip`; hardware and notarization remained unexercised.
 
 ## Discrimination Sensor
 
-Scratch root: `/private/tmp/AirShortcut-verifier2.KjiiQs` (archive copy of
-`837f3c3`; real working tree was never mutated).
+Scratch roots: `/private/tmp/AirShortcut-verifier3.uI9Xkfjz`,
+`/private/tmp/AirShortcut-verifier3-mut2.5i132Mfp`, and
+`/private/tmp/AirShortcut-verifier3-mut3.yUVqFX6N` (archive copies of
+`57fb0ed`; the real working tree was never mutated).
 
 | Mutation | Target and behavioral fault | Probe | Result |
 | --- | --- | --- | --- |
-| M1 | `TrackpadGestureService.fallbackEventMask`: added `.mouseMoved`. | `swift test --disable-sandbox --filter TrackpadGestureServiceTests/testPublicFallbackDoesNotMonitorKeyboardOrMouseEvents` still passed because the test checks mouse-button-down events but not pointer movement. | **SURVIVED** |
-| M2 | Hardware-report validator accepted `UNKNOWN` as a status. | The invalid-status fixture changed from required non-zero to exit 0. | **KILLED** |
-| M3 | Disabled the mandatory non-empty `--source` check in `scripts/lessons.py`. | The missing-source probe changed from required exit 2 to adding an ungrounded candidate. | **KILLED** |
+| M1 | Removed `.swipe` from `TrackpadGestureService.fallbackEventMask`, testing positive completeness rather than repeating the prior extra-event fault. | Focused fallback-mask test failed at `XCTAssertEqual`: actual mask omitted the required system swipe event. | **KILLED** |
+| M2 | Removed the `user name` branch from the hardware-report sensitive-marker sanitizer. | `username-marker.md`, which must be rejected, changed to exit 0; the negative-fixture probe detected the regression. | **KILLED** |
+| M3 | Changed the non-Developer-ID branch of release preflight to report `developer-id`. | Preflight still exited 0, but the required `signing mode: ad-hoc/development` assertion failed and exposed the false distribution classification. | **KILLED** |
 
 **Sensor depth**: lightweight, 3 targeted behavior mutations.
-**Original result**: 2/3 killed; 1 survived — fix required.
+**Third-sensor result**: 3/3 killed — **PASS**.
 
-### Post-review M1 verification
-
-- **Correction**: the fallback test now compares the complete event mask with
-  exactly `.magnify`, `.rotate`, and `.swipe`, so every unrelated event mask is
-  rejected without maintaining a partial denylist.
-- **Focused baseline**:
-  `swift test --disable-sandbox --filter TrackpadGestureServiceTests/testPublicFallbackDoesNotMonitorKeyboardOrMouseEvents`
-  executed 1 test with 0 failures.
-- **Scratch mutant**: adding `.mouseMoved` produced the expected
-  `XCTAssertEqual` mask mismatch and exit 1.
-- **Corrected result**: 3/3 targeted mutations killed — **PASS**.
+The semantic fallback recheck proves both sides of the exact-mask contract:
+the prior correction rejects unrelated events, while M1 above proves that a
+required public gesture cannot be silently removed.
 
 ## Interactive UAT and Manual Evidence
 
@@ -144,19 +138,20 @@ as required until corroboration across a distinct feature:
 - `L-004`: require Developer ID/notarization/staple/Gatekeeper/clean-machine
   evidence before declaring a distributable release.
 
-`L-005` records the M1 signal as a `surviving_mutant` candidate, grounded at
-line 76 of this report and added through the canonical script after the
-post-review correction.
+`L-005` records the prior second-sensor M1 signal as a `surviving_mutant`
+candidate and was added through the canonical script after the post-review
+correction. The third sensor produced no new surviving mutant or precision
+gap, so no additional lesson was recorded.
 
 ## Summary
 
-**Overall**: **BLOCKED — the automated gate and corrected discrimination
-sensor pass, but release readiness remains incomplete.**
+**Overall**: **BLOCKED — the automated gate and third discrimination sensor
+pass, but release readiness remains incomplete.**
 
 What works: local SwiftPM build/tests/security gate, ad hoc packaging and
 strict extracted-signature verification, honest preview documentation, replay
 isolation, fallback/permission automated assertions, sanitized-report
-structure, and all three targeted mutation probes killed.
+structure, and all three new targeted mutation probes killed.
 
 What blocks completion: real CI evidence, license decision, physical UAT,
 publishable Developer ID/notarization evidence, and final release metadata.
