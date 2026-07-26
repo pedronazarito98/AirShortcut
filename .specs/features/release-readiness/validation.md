@@ -4,12 +4,12 @@
 **Spec**: `.specs/features/release-readiness/spec.md`
 **Diff range**: `27e0650..837f3c3`
 **Verifier**: second independent sub-agent (author != verifier)
-**Verdict**: **FAIL / BLOCKED**
+**Verdict**: **BLOCKED**
 
 The automated preview baseline is healthy, but the feature is not fully
-verified. In addition to the external blockers already preserved, this second
-independent sensor found a surviving fallback-input mutant. Explicit
-`NOT-RUN`, blockers, and surviving mutants below are not counted as PASS.
+verified. The fallback-input mutant found by the second independent sensor was
+killed by the post-review correction recorded below. Explicit `NOT-RUN` and
+external blockers are not counted as PASS.
 
 ## Task Completion
 
@@ -21,7 +21,7 @@ independent sensor found a surviving fallback-input mutant. Explicit
 | T12 | Blocked | Report is sanitized and structurally valid, but physical session/UAT is `NOT-RUN`. |
 | T13-T15 | Done for ad hoc | ZIP dry-run passes strict/deep signature verification and is honestly labeled development-only. |
 | T16 | Blocked | No Developer ID identity, notarization, staple, Gatekeeper, or clean-machine evidence. |
-| T17-T19 | Partial | Preview/blocker map and lessons tooling exist, but the second sensor found a survivor that requires a fix task and a newly grounded lesson. |
+| T17-T19 | Partial | Preview/blocker map and lessons tooling exist; the second-sensor survivor was fixed and grounded as lesson `L-005`, while external gates remain blocked. |
 
 ## Spec-Anchored Acceptance Criteria
 
@@ -42,11 +42,11 @@ independent sensor found a surviving fallback-input mutant. Explicit
 | RR-13 | Developer ID checklist requires nested signing, Hardened Runtime, notarization acceptance, staple validation, and clean-machine execution. | `outputs/release-validation-2026-07-26.md:11-39` and `outputs/release-template.md:32-52` require every gate and preserve `NOT-RUN`. | **PASS** |
 | RR-14 | A published release includes version, commit, signing, minimum macOS, private-API limitation, and verification evidence. | `outputs/release-template.md:6-18,20-61` defines the contract, but no publishable Developer ID release artifact/notes exist. | **BLOCKED** |
 | RR-15 | Independent verifier maps every AC to evidence or a gap. | This report maps RR-01-RR-18 with file/line evidence or explicit zero/blocker. | **PASS** |
-| RR-16 | One to three scratch behavior mutations are killed; survivors become fix tasks. | Second independent sensor at `/private/tmp/AirShortcut-verifier2.KjiiQs`: M1 (`.mouseMoved` added to the public fallback mask) survived; M2 and M3 were killed. A fix task is required. | **FAIL** |
-| RR-17 | Any AC gap/survivor/precision/deviation/gate failure records a grounded lesson through `scripts/lessons.py`. | The script rejects an empty `--source` with exit 2 and state has four correctly grounded `ac_gap` candidates. There is no lesson yet for the newly surviving M1 because this verifier was authorized to update only `validation.md`. | **BLOCKED** |
+| RR-16 | One to three scratch behavior mutations are killed; survivors become fix tasks. | Post-review test asserts the complete allowed fallback mask at `Tests/AirShortcutTests/TrackpadGestureServiceTests.swift:69-80`; focused scratch rerun with M1 (`.mouseMoved`) failed with the expected mask mismatch. M2 and M3 remain killed by the second sensor. | **PASS** |
+| RR-17 | Any AC gap/survivor/precision/deviation/gate failure records a grounded lesson through `scripts/lessons.py`. | `scripts/lessons.py add` recorded candidate `L-005` with signal `surviving_mutant`, grounded at M1 in this report; the four prior `ac_gap` lessons remain present. | **PASS** |
 | RR-18 | Required ACs still unverified after the bounded cycle are escalated as not ready. | `outputs/release-readiness-checklist.md:63-70` lists blockers; this independent verdict remains BLOCKED and does not silently complete them. | **PASS** |
 
-**Spec-anchored status**: 10/18 PASS; 1/18 FAIL; 7/18 BLOCKED; 0 false PASS.
+**Spec-anchored status**: 12/18 PASS; 0/18 FAIL; 6/18 BLOCKED; 0 false PASS.
 
 ## Build Gate
 
@@ -65,6 +65,9 @@ independent sensor found a surviving fallback-input mutant. Explicit
 - **Test count**: author freeze records 97 baseline and 100 current (+3);
   the verifier independently observed 100 current tests.
 - **Diff hygiene**: `git diff --check 27e0650..837f3c3` passed.
+- **Post-review gate after `24d6f4d`**: `./script/ci_verify.sh --package`
+  passed with 100/100 Swift tests, 8/8 focused security tests, and verified
+  `dist/AirShortcut.zip`; hardware and notarization remained unexercised.
 
 ## Discrimination Sensor
 
@@ -78,7 +81,19 @@ Scratch root: `/private/tmp/AirShortcut-verifier2.KjiiQs` (archive copy of
 | M3 | Disabled the mandatory non-empty `--source` check in `scripts/lessons.py`. | The missing-source probe changed from required exit 2 to adding an ungrounded candidate. | **KILLED** |
 
 **Sensor depth**: lightweight, 3 targeted behavior mutations.
-**Result**: 2/3 killed; 1 survived — **FAIL**.
+**Original result**: 2/3 killed; 1 survived — fix required.
+
+### Post-review M1 verification
+
+- **Correction**: the fallback test now compares the complete event mask with
+  exactly `.magnify`, `.rotate`, and `.swipe`, so every unrelated event mask is
+  rejected without maintaining a partial denylist.
+- **Focused baseline**:
+  `swift test --disable-sandbox --filter TrackpadGestureServiceTests/testPublicFallbackDoesNotMonitorKeyboardOrMouseEvents`
+  executed 1 test with 0 failures.
+- **Scratch mutant**: adding `.mouseMoved` produced the expected
+  `XCTAssertEqual` mask mismatch and exit 1.
+- **Corrected result**: 3/3 targeted mutations killed — **PASS**.
 
 ## Interactive UAT and Manual Evidence
 
@@ -104,24 +119,17 @@ Developer ID, notarization, staple, `spctl`, and clean-machine execution remain
 
 ## Ranked Gaps and Fix Tasks
 
-1. **Major — RR-16/RR-08 automated scope**: strengthen
-   `testPublicFallbackDoesNotMonitorKeyboardOrMouseEvents` so representative
-   pointer movement/drag/scroll masks cannot enter the public fallback
-   unnoticed; rerun the sensor.
-2. **Blocker — RR-17**: record one `surviving_mutant` lesson through
-   `scripts/lessons.py`, grounded in M1 of this report, after the fix owner
-   accepts the new validation signal.
-3. **Blocker — RR-05**: owner must choose a compatible open-source license and
+1. **Blocker — RR-05**: owner must choose a compatible open-source license and
    add `LICENSE`; legal choice cannot be inferred by the verifier.
-4. **Blocker — RR-07/RR-08/RR-10**: execute and sanitize the full internal and
+2. **Blocker — RR-07/RR-08/RR-10**: execute and sanitize the full internal and
    Magic Trackpad matrix, including permission denial, fallback input safety,
    sleep/wake, reconnection, and false-positive duration/count.
-5. **Blocker — RR-13/RR-14 distribution outcome**: produce one Developer ID
+3. **Blocker — RR-13/RR-14 distribution outcome**: produce one Developer ID
    artifact with Hardened Runtime, nested signing, accepted notarization,
    staple validation, `spctl`, and clean-machine execution before binary
    release. RR-13's checklist contract passes; the actual distribution remains
    blocked.
-6. **Major — RR-01/RR-03**: run the workflow on a real PR, inject a controlled
+4. **Major — RR-01/RR-03**: run the workflow on a real PR, inject a controlled
    failing test in a throwaway branch to prove red status, then preserve a clean
    successful run and its summary.
 ## Lessons
@@ -136,22 +144,19 @@ as required until corroboration across a distinct feature:
 - `L-004`: require Developer ID/notarization/staple/Gatekeeper/clean-machine
   evidence before declaring a distributable release.
 
-The newly surviving M1 is validation signal not represented by those four
-entries. RR-17 therefore remains blocked until a `surviving_mutant` lesson is
-added through the canonical script; this verifier did not mutate
-`.specs/lessons.json` outside the explicitly allowed report-only update.
+`L-005` records the M1 signal as a `surviving_mutant` candidate, grounded at
+line 76 of this report and added through the canonical script after the
+post-review correction.
 
 ## Summary
 
-**Overall**: **FAIL / BLOCKED — the automated gate passes, but the second
-sensor found a surviving fallback-input mutant and release readiness remains
-incomplete.**
+**Overall**: **BLOCKED — the automated gate and corrected discrimination
+sensor pass, but release readiness remains incomplete.**
 
 What works: local SwiftPM build/tests/security gate, ad hoc packaging and
 strict extracted-signature verification, honest preview documentation, replay
 isolation, fallback/permission automated assertions, sanitized-report
-structure, and two newly killed mutation probes.
+structure, and all three targeted mutation probes killed.
 
-What blocks completion: the fallback-input test gap and its required lesson,
-real CI evidence, license decision, physical UAT, publishable Developer
-ID/notarization evidence, and final release metadata.
+What blocks completion: real CI evidence, license decision, physical UAT,
+publishable Developer ID/notarization evidence, and final release metadata.

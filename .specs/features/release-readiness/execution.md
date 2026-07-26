@@ -26,6 +26,7 @@ conclusões deste relatório.
 | T18 | `9f80d33` | release notes e issues locais com critérios de aceite |
 | correção de gate | `b0ddf45` | trailing whitespace removido das evidências |
 | correção pós-Verifier | `326cc07` | script canônico e estado de lessons restaurados; gaps reais registrados como candidatos |
+| correção pós-segunda verificação | `24d6f4d` | máscara permitida do fallback testada integralmente; M1 com `.mouseMoved` morto em scratch |
 
 ## Gates finais do autor
 
@@ -66,6 +67,9 @@ fora do commit.
 - `scripts/lessons.py`: restaurado a partir do asset canônico do
   `tlc-spec-driven`; quatro gaps reais foram registrados sem promover guidance
   antes de recorrência em outra feature.
+- Segunda verificação: o mutante M1 expôs uma denylist parcial no teste do
+  fallback. A correção compara a máscara completa permitida e `L-005` registra
+  o sinal `surviving_mutant` ancorado no relatório.
 
 ## Handoff independente
 

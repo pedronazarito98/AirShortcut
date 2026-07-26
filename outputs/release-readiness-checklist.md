@@ -54,8 +54,8 @@ geral é `PREVIEW`; os dois subescopos de release binária e suporte físico sã
 | Req. | Estado | Evidência ou blocker |
 | --- | --- | --- |
 | RR-15 | PASS | `.specs/features/release-readiness/validation.md` mapeia cada AC a evidência ou gap. |
-| RR-16 | PASS | três mutações comportamentais em scratch foram mortas; nenhuma sobreviveu. |
-| RR-17 | PASS | `scripts/lessons.py` registrou quatro lessons candidatas ancoradas nos gaps reais. |
+| RR-16 | PASS | M2 e M3 foram mortos na segunda verificação; após a correção `24d6f4d`, o M1 com `.mouseMoved` também falha pela igualdade da máscara completa permitida. |
+| RR-17 | PASS | `scripts/lessons.py` mantém quatro lessons `ac_gap` e registrou `L-005` como `surviving_mutant`, ancorada no M1 de `validation.md`. |
 | RR-18 | PASS | o veredito permanece BLOCKED enquanto requisitos obrigatórios não têm evidência. |
 
 ## Gates por área

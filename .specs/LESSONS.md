@@ -38,6 +38,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: .specs/features/release-readiness/validation.md:RR-14 (distribution)
 - last seen: 2026-07-26T14:20:55Z
 
+### L-005 — Assert the complete allowed event mask when isolation requires every unrelated input event to remain unmonitored.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `Swift AppKit public fallback input isolation` · harmful: 0
+- features: release-readiness
+- evidence: .specs/features/release-readiness/validation.md:76 (M1) (Swift AppKit public fallback input isolation)
+- last seen: 2026-07-26T14:29:27Z
+
 ## Quarantined (failed when applied — ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

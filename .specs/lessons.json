@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 5,
+  "next_id": 6,
   "lessons": [
     {
       "id": "L-001",
@@ -76,6 +76,24 @@
       ],
       "created": "2026-07-26T14:20:55Z",
       "last_seen": "2026-07-26T14:20:55Z"
+    },
+    {
+      "id": "L-005",
+      "key": "surviving_mutant::assert the complete allowed event mask when isolation requires every unrelated input event to remain unmonitored",
+      "text": "Assert the complete allowed event mask when isolation requires every unrelated input event to remain unmonitored.",
+      "signal": "surviving_mutant",
+      "scope": "Swift AppKit public fallback input isolation",
+      "status": "candidate",
+      "features": [
+        "release-readiness"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        ".specs/features/release-readiness/validation.md:76 (M1) (Swift AppKit public fallback input isolation)"
+      ],
+      "created": "2026-07-26T14:29:27Z",
+      "last_seen": "2026-07-26T14:29:27Z"
     }
   ]
 }
