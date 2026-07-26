@@ -18,7 +18,7 @@ enum WindowControlError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .accessibilityRequired:
-            "Conceda Acessibilidade ao AirShortcut para controlar janelas."
+            "Conceda Acessibilidade ao \(TicoBrand.displayName) para controlar janelas."
         case .applicationNotRunning:
             "O aplicativo escolhido não está em execução."
         case .windowNotFound:

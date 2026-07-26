@@ -7,7 +7,7 @@ struct MenuBarContentView: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        Button("Abrir AirShortcut") {
+        Button("Abrir \(TicoBrand.displayName)") {
             NSApp.activate(ignoringOtherApps: true)
             openWindow(id: "main")
         }
@@ -45,7 +45,7 @@ struct MenuBarContentView: View {
             Text("Ajustes…")
         }
 
-        Button("Encerrar AirShortcut") {
+        Button("Encerrar \(TicoBrand.displayName)") {
             NSApplication.shared.terminate(nil)
         }
     }

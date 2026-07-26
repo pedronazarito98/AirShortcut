@@ -82,7 +82,10 @@ final class EventLogStore: ObservableObject {
         ).first ?? fileManager.temporaryDirectory
 
         return applicationSupport
-            .appendingPathComponent("AirShortcut", isDirectory: true)
+            .appendingPathComponent(
+                TicoBrand.legacyApplicationSupportDirectoryName,
+                isDirectory: true
+            )
             .appendingPathComponent("execution-log.json", isDirectory: false)
     }
 

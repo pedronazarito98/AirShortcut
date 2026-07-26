@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PACKAGE_MODE=0
+PRODUCT_NAME="AirShortcut"
+PUBLIC_APP_NAME="Tico"
+BUNDLE_ID="com.pedronazarito.AirShortcut"
+ARCHIVE_PATH="$ROOT_DIR/dist/$PUBLIC_APP_NAME.zip"
+TEST_LOG="$(/usr/bin/mktemp /private/tmp/Tico-ci-tests.XXXXXXXX)"
+VERIFY_DIR=""
+SWIFT_ARGS=()
+
+if [[ "${AIRSHORTCUT_DISABLE_SWIFTPM_SANDBOX:-0}" == "1" ]]; then
+  SWIFT_ARGS+=(--disable-sandbox)
+fi
+
+cleanup() {
+  /bin/rm -f -- "$TEST_LOG"
+  if [[ -n "$VERIFY_DIR" ]]; then
+    /bin/rm -rf -- "$VERIFY_DIR"
+  fi
+}
+trap cleanup EXIT HUP INT TERM
+
+if [[ "${1:-}" == "--package" ]]; then
+  PACKAGE_MODE=1
+elif [[ $# -ne 0 ]]; then
+  echo "usage: $0 [--package]" >&2
+  exit 2
+fi
+
+step() {
+  printf '\n==> %s\n' "$1"
+}
+
+cd "$ROOT_DIR"
+
+step "Validating shell scripts"
+bash -n script/build_and_run.sh
+bash -n script/ci_verify.sh
+bash -n script/release_preflight.sh
+bash -n script/notarize_release.sh
+bash -n script/validate_hardware_report.sh
+
+step "Building Tico (SwiftPM product AirShortcut)"
+swift build ${SWIFT_ARGS[@]+"${SWIFT_ARGS[@]}"} --product "$PRODUCT_NAME"
+
+step "Running complete Swift test suite"
+swift test ${SWIFT_ARGS[@]+"${SWIFT_ARGS[@]}"} 2>&1 | /usr/bin/tee "$TEST_LOG"
+
+step "Running security regression suite"
+swift test ${SWIFT_ARGS[@]+"${SWIFT_ARGS[@]}"} --filter SecurityRegressionTests
+
+if [[ "$PACKAGE_MODE" -eq 1 ]]; then
+  step "Building and verifying local ad hoc package"
+  ./script/build_and_run.sh --package
+  [[ -f "$ARCHIVE_PATH" ]]
+
+  VERIFY_DIR="$(/usr/bin/mktemp -d /private/tmp/Tico-ci-package.XXXXXXXX)"
+  /usr/bin/ditto -x -k "$ARCHIVE_PATH" "$VERIFY_DIR"
+  EXTRACTED_APP="$VERIFY_DIR/$PUBLIC_APP_NAME.app"
+  INFO_PLIST="$EXTRACTED_APP/Contents/Info.plist"
+  /usr/bin/xattr -cr "$EXTRACTED_APP"
+  codesign --verify --deep --strict "$EXTRACTED_APP"
+  /usr/bin/plutil -lint "$INFO_PLIST"
+  [[ "$(/usr/bin/plutil -extract CFBundleDisplayName raw "$INFO_PLIST")" == "$PUBLIC_APP_NAME" ]]
+  [[ "$(/usr/bin/plutil -extract CFBundleExecutable raw "$INFO_PLIST")" == "$PRODUCT_NAME" ]]
+  [[ "$(/usr/bin/plutil -extract CFBundleIdentifier raw "$INFO_PLIST")" == "$BUNDLE_ID" ]]
+  [[ -x "$EXTRACTED_APP/Contents/MacOS/$PRODUCT_NAME" ]]
+  [[ -f "$EXTRACTED_APP/Contents/Resources/Tico.icns" ]]
+fi
+
+TEST_COUNT="$(/usr/bin/sed -nE 's/.*Executed ([0-9]+) tests?.*/\1/p' "$TEST_LOG" | /usr/bin/tail -n 1)"
+if [[ -z "$TEST_COUNT" ]]; then
+  echo "Unable to determine the executed test count." >&2
+  exit 1
+fi
+
+step "Automated verification summary"
+echo "Swift tests: $TEST_COUNT"
+echo "Local app path: $ROOT_DIR/dist/$PUBLIC_APP_NAME.app"
+if [[ "$PACKAGE_MODE" -eq 1 ]]; then
+  echo "Verified ad hoc archive: $ARCHIVE_PATH"
+else
+  echo "Package verification: not requested (use --package)"
+fi
+echo "Physical trackpad coverage: not exercised by this automated gate"
+echo "Notarization: not exercised by this automated gate"

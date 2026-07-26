@@ -174,24 +174,34 @@ final class TrackpadLaboratoryPhaseOneTests: XCTestCase {
             ]),
             validationStore: validation
         )
-        var deliveredEvents: [InputEventDescriptor] = []
-        service.start { deliveredEvents.append($0) }
+        var actionLog: [InputEventDescriptor] = []
+        service.start { actionLog.append($0) }
         service.startSessionRecording(name: "Integração")
 
         for frame in shortSwipeFrames() {
             provider.emit(frame)
         }
-        try await waitUntil { deliveredEvents.count == 1 }
+        try await waitUntil { actionLog.count == 1 }
 
         let document = try XCTUnwrap(service.stopSessionRecording())
         XCTAssertEqual(document.frames.count, 3)
-        XCTAssertEqual(deliveredEvents.map(\.gesture), [.swipeRight])
+        XCTAssertEqual(actionLog.map(\.gesture), [.swipeRight])
 
-        service.replay(document, speed: 100)
-        try await waitUntil { !service.isReplaying && service.replayProgress == 1 }
+        for speed in [0.5, 1.0, 2.0] {
+            let actionLogBeforeReplay = actionLog
+            service.replay(document, speed: speed)
+            try await waitUntil { !service.isReplaying && service.replayProgress == 1 }
 
-        XCTAssertEqual(deliveredEvents.count, 1, "Replay must not execute the live event handler")
-        XCTAssertEqual(service.latestGestureEvent?.kind, .swipeRight)
+            XCTAssertEqual(service.replayProgress, 1, accuracy: 0.001)
+            XCTAssertEqual(service.laboratorySnapshot?.phase, .ended)
+            XCTAssertEqual(service.laboratorySnapshot?.diagnostic.outcome, .accepted)
+            XCTAssertEqual(service.latestGestureEvent?.kind, .swipeRight)
+            XCTAssertEqual(
+                actionLog,
+                actionLogBeforeReplay,
+                "Replay at \(speed)× must not execute the live rule/action handler"
+            )
+        }
         service.stop()
     }
 

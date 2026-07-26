@@ -8,7 +8,7 @@ final class AutomationApprovalStore {
 
     init(
         defaults: UserDefaults = .standard,
-        storageKey: String = "com.airshortcut.approved-automations"
+        storageKey: String = TicoBrand.legacyUserDefaultsPrefix + "approved-automations"
     ) {
         self.defaults = defaults
         self.storageKey = storageKey
@@ -38,4 +38,3 @@ final class AutomationApprovalStore {
             .joined()
     }
 }
-

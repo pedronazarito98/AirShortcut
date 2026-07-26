@@ -5,7 +5,7 @@ import UniformTypeIdentifiers
 enum RuleFilePanel {
     static func chooseImportURL() -> URL? {
         let panel = NSOpenPanel()
-        panel.title = "Importar regras do AirShortcut"
+        panel.title = "Importar regras do \(TicoBrand.displayName)"
         panel.prompt = "Importar"
         panel.allowedContentTypes = [.json]
         panel.canChooseFiles = true
@@ -16,10 +16,10 @@ enum RuleFilePanel {
 
     static func chooseExportURL() -> URL? {
         let panel = NSSavePanel()
-        panel.title = "Exportar regras do AirShortcut"
+        panel.title = "Exportar regras do \(TicoBrand.displayName)"
         panel.prompt = "Exportar"
         panel.allowedContentTypes = [.json]
-        panel.nameFieldStringValue = "AirShortcut-rules.json"
+        panel.nameFieldStringValue = "\(TicoBrand.displayName)-rules.json"
         panel.canCreateDirectories = true
         return panel.runModal() == .OK ? panel.url : nil
     }

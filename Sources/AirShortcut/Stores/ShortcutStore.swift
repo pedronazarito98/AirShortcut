@@ -21,7 +21,7 @@ enum ShortcutStoreError: LocalizedError, Equatable {
         case let .unsupportedVersion(version):
             return "Shortcut document version \(version) is not supported."
         case .invalidDocument:
-            return "The shortcut document is not valid JSON for AirShortcut."
+            return "O documento de atalhos não contém um JSON válido para o \(TicoBrand.displayName)."
         }
     }
 }
@@ -68,7 +68,10 @@ final class ShortcutStore: ObservableObject {
         ).first ?? fileManager.temporaryDirectory
 
         return applicationSupport
-            .appendingPathComponent("AirShortcut", isDirectory: true)
+            .appendingPathComponent(
+                TicoBrand.legacyApplicationSupportDirectoryName,
+                isDirectory: true
+            )
             .appendingPathComponent("shortcuts.json", isDirectory: false)
     }
 
@@ -420,7 +423,7 @@ final class ShortcutStore: ObservableObject {
                 updatedAt: createdAt
             ),
             ShortcutRule(
-                name: "Open AirShortcut website example",
+                name: "Abrir site de exemplo do \(TicoBrand.displayName)",
                 trigger: .mouseButton(button: 3, modifiers: []),
                 action: .openURL(url: URL(string: "https://www.apple.com/macos/")!),
                 notes: "Example for an extra mouse button.",

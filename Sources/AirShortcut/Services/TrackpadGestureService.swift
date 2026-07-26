@@ -23,6 +23,7 @@ enum TrackpadCaptureMode: String, Sendable {
 final class TrackpadGestureService: ObservableObject {
     typealias EventHandler = (InputEventDescriptor) -> Void
     typealias LaboratoryHandler = (TrackpadLaboratorySnapshot) -> Void
+    static let fallbackEventMask: NSEvent.EventTypeMask = [.magnify, .rotate, .swipe]
 
     @Published private(set) var isRunning = false
     @Published private(set) var captureMode: TrackpadCaptureMode = .stopped
@@ -264,12 +265,15 @@ final class TrackpadGestureService: ObservableObject {
     }
 
     private func installSystemGestureFallback() {
-        let mask: NSEvent.EventTypeMask = [.magnify, .rotate, .swipe]
-        localMonitor = NSEvent.addLocalMonitorForEvents(matching: mask) { [weak self] event in
+        localMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: Self.fallbackEventMask
+        ) { [weak self] event in
             MainActor.assumeIsolated { self?.processSystemGesture(event) }
             return event
         }
-        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: mask) { [weak self] event in
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(
+            matching: Self.fallbackEventMask
+        ) { [weak self] event in
             Task { @MainActor in self?.processSystemGesture(event) }
         }
     }
@@ -387,8 +391,11 @@ final class TrackpadGestureService: ObservableObject {
         shouldResumeAfterWake = isRunning
         frameProvider?.stop()
         frameProvider = nil
-        worker.cancel { [weak self] output in
-            Task { @MainActor in self?.handleRawOutput(output) }
+        let owner = WeakTrackpadGestureServiceBox(self)
+        worker.cancel { output in
+            Task { @MainActor in
+                owner.value?.handleRawOutput(output)
+            }
         }
         activeTouchCount = 0
         didReceiveRawFrame = false
