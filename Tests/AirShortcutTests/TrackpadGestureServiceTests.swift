@@ -67,16 +67,17 @@ final class TrackpadGestureServiceTests: XCTestCase {
 
     @MainActor
     func testPublicFallbackDoesNotMonitorKeyboardOrMouseEvents() {
-        let mask = TrackpadGestureService.fallbackEventMask
+        let supportedSystemGestures: NSEvent.EventTypeMask = [.magnify, .rotate, .swipe]
 
-        XCTAssertTrue(mask.contains(.magnify))
-        XCTAssertTrue(mask.contains(.rotate))
-        XCTAssertTrue(mask.contains(.swipe))
-        XCTAssertFalse(mask.contains(.keyDown))
-        XCTAssertFalse(mask.contains(.flagsChanged))
-        XCTAssertFalse(mask.contains(.leftMouseDown))
-        XCTAssertFalse(mask.contains(.rightMouseDown))
-        XCTAssertFalse(mask.contains(.otherMouseDown))
+        XCTAssertEqual(
+            TrackpadGestureService.fallbackEventMask,
+            supportedSystemGestures,
+            """
+            The public fallback must observe only supported system gestures. \
+            Any additional mask could monitor original keyboard, pointer movement, \
+            mouse button, drag, or scroll input.
+            """
+        )
     }
 
     @MainActor
