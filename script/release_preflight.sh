@@ -47,7 +47,7 @@ fi
 
 SIGNING_DETAILS="$(/usr/bin/codesign -dvvv "$EXTRACTED_APP" 2>&1)"
 SIGNING_AUTHORITY="$(printf '%s\n' "$SIGNING_DETAILS" | /usr/bin/sed -n 's/^Authority=//p' | /usr/bin/head -n 1)"
-SIGNING_FLAGS="$(printf '%s\n' "$SIGNING_DETAILS" | /usr/bin/sed -n 's/^CodeDirectory .* flags=\\([^ ]*\\).*/\\1/p' | /usr/bin/head -n 1)"
+SIGNING_FLAGS_LINE="$(printf '%s\n' "$SIGNING_DETAILS" | /usr/bin/sed -n '/^CodeDirectory .* flags=/p' | /usr/bin/head -n 1)"
 
 if [[ "$SIGNING_AUTHORITY" == Developer\ ID\ Application:* ]]; then
   SIGNING_MODE="developer-id"
@@ -64,7 +64,7 @@ else
 fi
 
 HARDENED_RUNTIME="not-confirmed"
-if [[ "$SIGNING_FLAGS" == *runtime* ]]; then
+if [[ "$SIGNING_FLAGS_LINE" == *runtime* ]]; then
   HARDENED_RUNTIME="enabled"
 fi
 

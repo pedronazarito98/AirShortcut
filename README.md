@@ -31,10 +31,14 @@ Tudo fica no Mac: regras, calibrações e histórico são locais.
 
 ## Estado atual
 
-O Tico é um **preview técnico para macOS 14+**. O uso no trackpad interno do
-Mac já foi validado manualmente. Build, testes, regressões de segurança,
-replay e pacote local são verificados automaticamente pelo CI; não existe um
-gate separado que exija formalizar a validação manual em relatório.
+O Tico é um **preview técnico open source para macOS 14+**. A forma
+recomendada de testar por enquanto é clonar o repositório e rodar o app
+localmente. Não há binário público assinado com Developer ID.
+
+O uso no trackpad interno do Mac já foi validado manualmente. Build, testes,
+regressões de segurança, replay e pacote local são verificados
+automaticamente pelo CI; não existe um gate separado que exija formalizar a
+validação manual em relatório.
 
 Magic Trackpad e outros dispositivos externos ainda não têm compatibilidade
 garantida. Quando houver um, o procedimento curto está no
@@ -44,6 +48,8 @@ Os gestos globais avançados usam uma integração experimental com o macOS. Se
 ela não estiver disponível, o Tico usa um fallback público com menos recursos.
 
 ## Como testar
+
+Clone o projeto e rode:
 
 ```sh
 ./script/build_and_run.sh
@@ -57,6 +63,10 @@ Para executar o gate completo:
 
 Na primeira execução, o macOS pode pedir Monitoramento de Entrada e, dependendo
 da automação, Acessibilidade.
+
+O projeto também consegue gerar `dist/Tico.zip`, mas esse pacote usa assinatura
+ad hoc quando não há Developer ID instalado. Ele serve para desenvolvimento e
+QA local, não como release pública pronta para usuários finais.
 
 ## Documentação
 

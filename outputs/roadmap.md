@@ -12,6 +12,7 @@
 - Identidade pública Tico preservando executável, dados e permissões técnicas
   do AirShortcut.
 - Gate local de build, testes, segurança e empacotamento ad hoc.
+- Documentação para publicação como preview técnico open source.
 
 ## Atualizações concluídas
 
@@ -29,7 +30,8 @@
 
 1. **Validar hardware externo:** Magic Trackpad permanece sem garantia até
    existir um dispositivo para executar a matriz.
-2. **Preparar uma distribuição pública:** instalar Developer ID, notarizar,
+2. **Preparar uma release binária assinada:** somente quando fizer sentido
+   pagar pelo Apple Developer Program, instalar Developer ID, notarizar,
    validar o ticket, passar pelo Gatekeeper e testar o mesmo artefato em um
    Mac ou usuário limpo.
 
@@ -49,6 +51,7 @@ observacional.
 
 ## Critério de evolução
 
-O código pode continuar público como **preview técnico**. Uma release binária
-para usuários só deve ser chamada de pronta depois dos gates de Developer ID,
-notarização, Gatekeeper e máquina limpa.
+O código pode continuar público como **preview técnico open source**. A
+distribuição recomendada neste estágio é build local a partir do repositório.
+Uma release binária para usuários só deve ser chamada de pronta depois dos
+gates de Developer ID, notarização, Gatekeeper e máquina limpa.

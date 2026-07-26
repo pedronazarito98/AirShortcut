@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — technical preview
+## Unreleased — technical preview open source
 
 Baseline desta iniciativa: `27e0650`. Consolidação integrada em `87f65ef`.
 
@@ -41,8 +41,8 @@ Baseline desta iniciativa: `27e0650`. Consolidação integrada em `87f65ef`.
 - O fallback público tem capacidades diferentes da captura privada.
 - O ZIP ad hoc é apenas um dry-run local e não deve ser distribuído como
   release para usuários.
-- A publicação do código como technical preview não representa suporte físico
-  nem aprovação de distribuição.
+- A publicação do código como technical preview open source não representa
+  suporte físico nem aprovação de distribuição binária.
 
 ### Como verificar
 
@@ -53,4 +53,4 @@ Baseline desta iniciativa: `27e0650`. Consolidação integrada em `87f65ef`.
 ```
 
 Consulte `outputs/roadmap.md` para o estado atual e `outputs/distribuicao.md`
-para os gates de uma release pública.
+para a estratégia de preview atual e os gates de uma release binária futura.
