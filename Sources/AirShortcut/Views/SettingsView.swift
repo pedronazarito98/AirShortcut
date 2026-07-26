@@ -1,0 +1,67 @@
+import ServiceManagement
+import SwiftUI
+
+struct SettingsView: View {
+    @ObservedObject var settings: AppSettingsStore
+    @State private var loginItemError: String?
+
+    var body: some View {
+        TabView {
+            Form {
+                Section("Inicialização") {
+                    Toggle("Abrir AirShortcut ao iniciar sessão", isOn: launchAtLoginBinding)
+                    Toggle("Iniciar captura de eventos ao abrir", isOn: $settings.startEventCaptureOnLaunch)
+                }
+
+                Section("Acesso rápido") {
+                    Toggle("Mostrar AirShortcut na barra de menus", isOn: $settings.showMenuBarExtra)
+                }
+
+                if let loginItemError {
+                    Text(loginItemError)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            }
+            .formStyle(.grouped)
+            .tabItem {
+                Label("Geral", systemImage: "gearshape")
+            }
+
+            Form {
+                Section("Scripts locais") {
+                    Label("Confirmação obrigatória em toda execução", systemImage: "checkmark.shield")
+                    Text("Scripts podem modificar arquivos e executar outros programas com sua conta. O AirShortcut sempre mostra o comando antes de executá-lo.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .formStyle(.grouped)
+            .tabItem {
+                Label("Segurança", systemImage: "lock.shield")
+            }
+        }
+        .frame(width: 520, height: 310)
+        .padding()
+    }
+
+    private var launchAtLoginBinding: Binding<Bool> {
+        Binding(
+            get: { settings.launchAtLogin },
+            set: { shouldLaunch in
+                do {
+                    if shouldLaunch {
+                        try SMAppService.mainApp.register()
+                    } else {
+                        try SMAppService.mainApp.unregister()
+                    }
+                    settings.launchAtLogin = shouldLaunch
+                    loginItemError = nil
+                } catch {
+                    settings.launchAtLogin = SMAppService.mainApp.status == .enabled
+                    loginItemError = "Não foi possível atualizar o início de sessão: \(error.localizedDescription)"
+                }
+            }
+        )
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Trackpad atalhos}",
+            "name": "Debug AirShortcut",
+            "target": "AirShortcut",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AirShortcut"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Trackpad atalhos}",
+            "name": "Release AirShortcut",
+            "target": "AirShortcut",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AirShortcut"
+        }
+    ]
+}

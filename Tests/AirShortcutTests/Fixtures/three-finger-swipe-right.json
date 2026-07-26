@@ -1,0 +1,71 @@
+{
+  "frames" : [
+    {
+      "deviceID" : "replay-trackpad",
+      "deviceTimestamp" : 0,
+      "frameNumber" : 1,
+      "receivedAt" : 1000000,
+      "touches" : [
+        {
+          "identifier" : 1,
+          "position" : { "x" : 0.2, "y" : 0.5 },
+          "pressure" : 0.4,
+          "state" : 4,
+          "velocity" : { "x" : 0, "y" : 0 }
+        },
+        {
+          "identifier" : 2,
+          "position" : { "x" : 0.3, "y" : 0.5 },
+          "pressure" : 0.4,
+          "state" : 4,
+          "velocity" : { "x" : 0, "y" : 0 }
+        },
+        {
+          "identifier" : 3,
+          "position" : { "x" : 0.4, "y" : 0.5 },
+          "pressure" : 0.4,
+          "state" : 4,
+          "velocity" : { "x" : 0, "y" : 0 }
+        }
+      ]
+    },
+    {
+      "deviceID" : "replay-trackpad",
+      "deviceTimestamp" : 0.2,
+      "frameNumber" : 2,
+      "receivedAt" : 1000200,
+      "touches" : [
+        {
+          "identifier" : 1,
+          "position" : { "x" : 0.5, "y" : 0.5 },
+          "pressure" : 0.5,
+          "state" : 4,
+          "velocity" : { "x" : 1.5, "y" : 0 }
+        },
+        {
+          "identifier" : 2,
+          "position" : { "x" : 0.6, "y" : 0.5 },
+          "pressure" : 0.5,
+          "state" : 4,
+          "velocity" : { "x" : 1.5, "y" : 0 }
+        },
+        {
+          "identifier" : 3,
+          "position" : { "x" : 0.7, "y" : 0.5 },
+          "pressure" : 0.5,
+          "state" : 4,
+          "velocity" : { "x" : 1.5, "y" : 0 }
+        }
+      ]
+    },
+    {
+      "deviceID" : "replay-trackpad",
+      "deviceTimestamp" : 0.25,
+      "frameNumber" : 3,
+      "receivedAt" : 1000250,
+      "touches" : []
+    }
+  ],
+  "name" : "three-finger-swipe-right",
+  "version" : 1
+}
